@@ -1,4 +1,5 @@
 namespace Domain.DTOs;
+
 public class UserCreationDto
 {
     public string UserName { get;}
