@@ -8,50 +8,53 @@
   <div class="card-body">
     <h4 class="card-title">Register</h4>
       <p class="card-text">Create a profile.</p>
-      <div>
+      <div class="col">
+      <div class="row-cols-auto content d-flex align-content-center">
           <label>Username:</label>
-          <input type="text" @bind="username" @bind:event="oninput"/>
+          <input type="text" @bind="userName" @bind:event="oninput"/>
           @if (!string.IsNullOrEmpty(resultMsg))
           {
               <label style="color: @color">@resultMsg</label>
           }
       </div>
-      <div>
+      <div class="row-cols-auto content d-flex align-content-center">
               <label>First Name:</label>
-              <input type="text" @bind="firstname" @bind:event="oninput"/>
+              <input type="text" @bind="firstName" @bind:event="oninput"/>
                 @if (!string.IsNullOrEmpty(resultMsg))
                       {
                           <label style="color: @color">@resultMsg</label>
                       }
           </div>
-          <div>
+          <div class="row-cols-auto content d-flex align-content-center">
                <label>Last Name:</label>
-              <input type="text" @bind="lastname" @bind:event="oninput"/>
+              <input type="text" @bind="lastName" @bind:event="oninput"/>
                 @if (!string.IsNullOrEmpty(resultMsg))
                       {
                           <label style="color: @color">@resultMsg</label>
                       }
               </div>
-               <div>
-                            <label>Email Adress:</label>
-                            <input type="text" @bind="emailaddress" @bind:event="oninput"/>
-                              @if (!string.IsNullOrEmpty(resultMsg))
-                                    {
-                                        <label style="color: @color">@resultMsg</label>
-                                    }
-               </div>
-    <div class="button-row">
-        <button @onclick="Create" disabled="@(string.IsNullOrEmpty(username) || (string.IsNullOrEmpty(firstname) ||(string.IsNullOrEmpty(lastname))))" class="acceptbtn">Create</button>
-        </div>
+          <div class="row-cols-auto content d-flex align-content-center">
+              <label>Email Adress:</label>
+              <input type="text" @bind="emailAddress" @bind:event="oninput"/>
+              @if (!string.IsNullOrEmpty(resultMsg))
+              {
+                  <label style="color: @color">@resultMsg</label>
+              }
+          </div>
+          <div class="button-row">
+              <button @onclick="Create" disabled="@(string.IsNullOrEmpty(userName) || (string.IsNullOrEmpty(firstName) ||(string.IsNullOrEmpty(lastName))))" class="acceptbtn">Create</button>
+          </div>
+          </div>
   </div>
 </div>
 
 
 @code {
-    private string username = "";
-    private string firstname = "";
-    private string lastname = "";
-    private string emailaddress = "";
+    private string userName = "";
+    private string password = "";
+    private string firstName = "";
+    private string lastName = "";
+    private string emailAddress = "";
     private string resultMsg = "";
     private string color = "";
     
@@ -62,14 +65,14 @@
         try
         {
             Console.WriteLine("here");
-            await userService.Create(new UserCreationDto(username));
-            await userService.Create(new UserCreationDto(firstname));
-            await userService.Create(new UserCreationDto(lastname));
-            await userService.Create(new UserCreationDto(emailaddress));
-            username = "";
-            firstname = "";
-            lastname = "";
-            emailaddress = "";
+            await userService.Create(new UserCreationDto(userName, password));
+    //           await userService.Create(new UserCreationDto(firstName));
+    //           await userService.Create(new UserCreationDto(lastName));
+    //           await userService.Create(new UserCreationDto(emailAddress));
+            userName = "";
+            firstName = "";
+            lastName = "";
+            emailAddress = "";
             resultMsg = "User successfully created";
             color = "green";
         }

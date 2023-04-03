@@ -1,2 +1,17 @@
 {
+  "Users": [
+    {
+      "UserName": "Chris",
+      "Password": "1234"
+    },
+    {
+      "UserName": "Mirko",
+      "Password": "123"
+    },
+    {
+      "UserName": "Filip",
+      "Password": "4321"
+    }
+  ],
+  "SubForums": []
 }

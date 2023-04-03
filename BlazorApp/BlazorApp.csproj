@@ -25,4 +25,9 @@
       <_ContentIncludedByDefault Remove="wwwroot\sample-data\weather.json" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Content Remove="Pages\FetchData.razor" />
+      <Content Remove="Pages\Counter.razor" />
+    </ItemGroup>
+
 </Project>
