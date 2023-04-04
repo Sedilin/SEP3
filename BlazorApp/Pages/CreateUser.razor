@@ -8,53 +8,29 @@
   <div class="card-body">
     <h4 class="card-title">Register</h4>
       <p class="card-text">Create a profile.</p>
-      <div class="col">
-      <div class="row-cols-auto content d-flex align-content-center">
-          <label>Username:</label>
-          <input type="text" @bind="userName" @bind:event="oninput"/>
-          @if (!string.IsNullOrEmpty(resultMsg))
-          {
-              <label style="color: @color">@resultMsg</label>
-          }
-      </div>
-      <div class="row-cols-auto content d-flex align-content-center">
-              <label>First Name:</label>
-              <input type="text" @bind="firstName" @bind:event="oninput"/>
-                @if (!string.IsNullOrEmpty(resultMsg))
-                      {
-                          <label style="color: @color">@resultMsg</label>
-                      }
+      <div class="row-cols-auto content  clearfix align-content-center">
+              <label>Username:</label>
+              <input type="text" @bind="userName" @bind:event="oninput"/>
+            
           </div>
-          <div class="row-cols-auto content d-flex align-content-center">
-               <label>Last Name:</label>
-              <input type="text" @bind="lastName" @bind:event="oninput"/>
-                @if (!string.IsNullOrEmpty(resultMsg))
-                      {
-                          <label style="color: @color">@resultMsg</label>
-                      }
-              </div>
-          <div class="row-cols-auto content d-flex align-content-center">
-              <label>Email Adress:</label>
-              <input type="text" @bind="emailAddress" @bind:event="oninput"/>
-              @if (!string.IsNullOrEmpty(resultMsg))
-              {
-                  <label style="color: @color">@resultMsg</label>
-              }
+          <div class="row-cols-auto content clearfix align-content-center">
+              <label> Password:</label>
+              <input type="text" @bind="password" @bind:event="oninput"/>
           </div>
           <div class="button-row">
-              <button @onclick="Create" disabled="@(string.IsNullOrEmpty(userName) || (string.IsNullOrEmpty(firstName) ||(string.IsNullOrEmpty(lastName))))" class="acceptbtn">Create</button>
+              <button @onclick="Create" disabled="@(string.IsNullOrEmpty(userName) || (string.IsNullOrEmpty(password)))" class="acceptbtn">Create</button>
           </div>
-          </div>
+  </div> 
+  @if (!string.IsNullOrEmpty(resultMsg))
+  {
+      <label style="color: @color">@resultMsg</label>
+  }
   </div>
-</div>
 
 
 @code {
     private string userName = "";
     private string password = "";
-    private string firstName = "";
-    private string lastName = "";
-    private string emailAddress = "";
     private string resultMsg = "";
     private string color = "";
     
@@ -67,9 +43,7 @@
             Console.WriteLine("here");
             await userService.Create(new UserCreationDto(userName, password));
             userName = "";
-            firstName = "";
-            lastName = "";
-            emailAddress = "";
+            password = "";
             resultMsg = "User successfully created";
             color = "green";
         }
