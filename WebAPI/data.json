@@ -1,17 +1,54 @@
 {
   "Users": [
     {
+      "Id": 0,
       "UserName": "Chris",
       "Password": "1234"
     },
     {
-      "UserName": "Mirko",
-      "Password": "123"
+      "Id": 1,
+      "UserName": "Lukasz",
+      "Password": "lukasz"
     },
     {
-      "UserName": "Filip",
+      "Id": 2,
+      "UserName": "Thomas",
       "Password": "4321"
+    },
+    {
+      "Id": 3,
+      "UserName": "Diana",
+      "Password": "1234"
+    },
+    {
+      "Id": 4,
+      "UserName": "Gabriela",
+      "Password": "1234"
+    },
+    {
+      "Id": 5,
+      "UserName": "Kevin",
+      "Password": "1234"
+    },
+    {
+      "Id": 6,
+      "UserName": "John",
+      "Password": "1234"
+    },
+    {
+      "Id": 7,
+      "UserName": "Alex",
+      "Password": "1234"
+    },
+    {
+      "Id": 8,
+      "UserName": "Fred",
+      "Password": "1234"
+    },
+    {
+      "Id": 9,
+      "UserName": "Alan",
+      "Password": "1234"
     }
-  ],
-  "SubForums": []
+  ]
 }

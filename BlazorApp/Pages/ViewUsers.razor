@@ -1,7 +1,10 @@
 @page "/ViewUsers"
 @using HttpClients.ClientInterfaces
-@using Domain
+@using Domain.Model
 @inject IUserService userService
+
+
+<h1> <span class="badge bg-secondary align-content-center">Tutor Dashboard</span></h1>
 
 @if (!string.IsNullOrEmpty(msg))
 {
@@ -23,27 +26,19 @@ else
     <div class="users-container">
         @foreach (User user in users)
         {
-            <div class="card" style="width:50px">
-                <img class="card-img-top" src="icons/user.png" alt="Card image">
-                <div class="card-img-overlay">
-                    <h4 class="card-title">@user.UserName</h4>
-                    <p class="card-text">This is my personel description</p>
-                    <a href="#" class="btn btn-primary">See Profile</a>
-                </div>
+            <div class="user-card" style="width:200px">
+              <img class="card-img-top" src="icons/user.png" alt="Card image">
+              <div class="card-body">
+                <h4 class="card-title">@user.UserName</h4>
+                <p class="card-text">My personal Desription.</p>
+                <a href="#" class="btn btn-primary">See Profile</a>
+              </div>
             </div>
         }
     </div>
 }
 
 @code {
-    
-/*   private string username = "";
-    private string firstname = "";
-    private string lastname = "";
-    private string emailaddress = "";
-    private string resultMsg = "";
-    private string color = "";
-*/    
     private IEnumerable<User>? users;
     private string msg = "";
 
@@ -60,29 +55,4 @@ else
             msg = e.Message;
         }
     }
-  /*  private async Task ViewProfile()
-    {
-        resultMsg = "";
-
-        try
-        {
-            Console.WriteLine("here");
-            await userService.Create(new UserCreationDto(username));await userService.Create(new UserCreationDto(firstname));
-            await userService.Create(new UserCreationDto(lastname));
-            await userService.Create(new UserCreationDto(emailaddress));
-            username = "";
-            firstname = "";
-            lastname = "";
-            emailaddress = "";
-            resultMsg = "User successfully created";
-            color = "green";
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            resultMsg = e.Message;
-            color = "red";
-        }
-    }
-    */
 }

@@ -1,28 +1,29 @@
 using Application.LogicInterfaces;
-using Domain;
 using Domain.DTOs;
+using Domain.Model;
 using Microsoft.AspNetCore.Mvc;
+
 
 namespace WebAPI.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class UsersController : ControllerBase
+public class UserController : ControllerBase
 {
     private readonly IUserLogic userLogic;
 
-    public UsersController(IUserLogic userLogic)
+    public UserController(IUserLogic userLogic)
     {
         this.userLogic = userLogic;
     }
-    
+
     [HttpPost]
     public async Task<ActionResult<User>> CreateAsync(UserCreationDto dto)
     {
         try
         {
             User user = await userLogic.CreateAsync(dto);
-            return Created($"/users/{user.UserName}", user);
+            return Created($"/users/{user.Id}", user);
         }
         catch (Exception e)
         {
@@ -32,7 +33,7 @@ public class UsersController : ControllerBase
     }
     
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<User>>> GetAsync([FromQuery] string? username)
+    public async Task<ActionResult<IEnumerable<User>>> GetAsync( string? username)
     {
         try
         {
@@ -47,4 +48,3 @@ public class UsersController : ControllerBase
         }
     }
 }
-

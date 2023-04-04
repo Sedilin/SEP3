@@ -1,45 +1,60 @@
 using System.Text.Json;
-using Domain;
+using Domain.Model;
+
 
 namespace FileData;
 
 public class FileContext
 {
     private const string FilePath = "data.json";
-    private DataContainer? _dataContainer;
 
-    public ICollection<User> Users
+    private DataContainer? dataContainer;
+    
+
+    public ICollection<User?> Users
     {
         get
         {
-            LoadData();
-            return _dataContainer!.Users;
+            LazyLoadData();
+            return dataContainer!.Users;
         }
     }
-    
+
+    private void LazyLoadData()
+    {
+        if (dataContainer == null)
+        {
+            LoadData();
+        }
+    }
+
     private void LoadData()
     {
-        if (_dataContainer != null) return;
-    
+        if (dataContainer != null) return;
+        
         if (!File.Exists(FilePath))
         {
-            _dataContainer = new ()
+            dataContainer = new ()
             {
+            
                 Users = new List<User>()
             };
             return;
         }
-        var content = File.ReadAllText(FilePath);
-        _dataContainer = JsonSerializer.Deserialize<DataContainer>(content);
+        string content = File.ReadAllText(FilePath);
+        dataContainer = JsonSerializer.Deserialize<DataContainer>(content, new JsonSerializerOptions
+        {
+            WriteIndented = true
+        });
     }
-    
+
     public void SaveChanges()
     {
-        string serialized = JsonSerializer.Serialize(_dataContainer, new JsonSerializerOptions
+        string serialized = JsonSerializer.Serialize(dataContainer, new JsonSerializerOptions
         {
             WriteIndented = true
         });
         File.WriteAllText(FilePath, serialized);
-        _dataContainer = null;
+        dataContainer = null;
     }
 }

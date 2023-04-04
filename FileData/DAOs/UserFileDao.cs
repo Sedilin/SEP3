@@ -1,6 +1,6 @@
 using Application.DaoInterfaces;
-using Domain;
 using Domain.DTOs;
+using Domain.Model;
 
 namespace FileData.DAOs;
 
@@ -32,6 +32,10 @@ public class UserFileDao : IUserDao
 
     public Task<User?> GetByUsernameAsync(string userName)
     {
+        if (context.Users == null)
+        {
+            return null;
+        }
         User? existing = context.Users.FirstOrDefault(u =>
             u.UserName.Equals(userName, StringComparison.OrdinalIgnoreCase)
         );
@@ -47,5 +51,13 @@ public class UserFileDao : IUserDao
         }
 
         return Task.FromResult(users);
+    }
+
+    public Task<User?> GetByIdAsync(int id)
+    {
+        User? existing = context.Users.FirstOrDefault(u =>
+            u.Id == id
+        );
+        return Task.FromResult(existing);
     }
 }

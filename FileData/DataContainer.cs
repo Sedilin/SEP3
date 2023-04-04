@@ -1,4 +1,5 @@
-using Domain;
+
+using Domain.Model;
 
 public class DataContainer
 {
