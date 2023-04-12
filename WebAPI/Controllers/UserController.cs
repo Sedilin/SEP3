@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Application.LogicInterfaces;
 using Domain.DTOs;
 using Domain.Model;
@@ -11,25 +12,29 @@ namespace WebAPI.Controllers;
 public class UserController : ControllerBase
 {
     private readonly IUserLogic userLogic;
+    private readonly HttpClient client;
 
-    public UserController(IUserLogic userLogic)
+    public UserController(IUserLogic userLogic, HttpClient client)
     {
         this.userLogic = userLogic;
+        this.client = client;
     }
 
     [HttpPost]
     public async Task<ActionResult<User>> CreateAsync(UserCreationDto dto)
     {
-        try
+        HttpResponseMessage response = await client.PostAsJsonAsync("/user/", dto);
+        string result = await response.Content.ReadAsStringAsync();
+        if (!response.IsSuccessStatusCode)
         {
-            User user = await userLogic.CreateAsync(dto);
-            return Created($"/users/{user.Id}", user);
+            throw new Exception(result);
         }
-        catch (Exception e)
+
+        User user = JsonSerializer.Deserialize<User>(result, new JsonSerializerOptions
         {
-            Console.WriteLine(e);
-            return StatusCode(500, e.Message);
-        }
+            PropertyNameCaseInsensitive = true
+        })!;
+        return user;
     }
     
     [HttpGet]
