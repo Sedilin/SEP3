@@ -29,7 +29,7 @@ public class UserLogic : IUserLogic
         return createdUser;
     }
 
-    public Task<IEnumerable<User>> GetAsync(SearchUserParametersDto searchParameters)
+    public Task<IEnumerable<User>> GetAsync(SearchUserParametersDto? searchParameters)
     {
         return userDao.GetAsync(searchParameters);
     }

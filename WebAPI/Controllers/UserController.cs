@@ -12,50 +12,40 @@ namespace WebAPI.Controllers;
 public class UserController : ControllerBase
 {
     private readonly IUserLogic userLogic;
-    private readonly HttpClient client;
 
-    public UserController(IUserLogic userLogic, HttpClient client)
+    public UserController(IUserLogic userLogic)
     {
         this.userLogic = userLogic;
-        this.client = client;
     }
 
     [HttpPost]
     public async Task<ActionResult<User>> CreateAsync(UserCreationDto dto)
     {
-        HttpResponseMessage response = await client.PostAsJsonAsync("/user/", dto);
-        string result = await response.Content.ReadAsStringAsync();
-        if (!response.IsSuccessStatusCode)
+        try
         {
-            throw new Exception(result);
+            User user = await userLogic.CreateAsync(dto);
+            return Created($"/user/{user.Id}", user);
         }
-
-        User user = JsonSerializer.Deserialize<User>(result, new JsonSerializerOptions
+        catch (Exception e)
         {
-            PropertyNameCaseInsensitive = true
-        })!;
-        return user;
+            Console.WriteLine(e);
+            return StatusCode(500, e.Message);
+        }
     }
     
     [HttpGet]
-    public async Task<IEnumerable<User>> GetAsync( string? username = null)
+    public async Task<ActionResult<IEnumerable<User>>> GetAsync( string? username = null)
     {
-        string uri = "/user/";
-        if (!string.IsNullOrEmpty(username))
+        try
         {
-            uri += $"?username={username}";
+            SearchUserParametersDto parameters = new(username);
+            IEnumerable<User> users = await userLogic.GetAsync(parameters);
+            return Ok(users);
         }
-        HttpResponseMessage response = await client.GetAsync(uri);
-        string result = await response.Content.ReadAsStringAsync();
-        if (!response.IsSuccessStatusCode)
+        catch (Exception e)
         {
-            throw new Exception(result);
+            Console.WriteLine(e);
+            return StatusCode(500, e.Message);
         }
-
-        IEnumerable<User> users = JsonSerializer.Deserialize<IEnumerable<User>>(result, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        })!;
-        return users;
     }
 }
