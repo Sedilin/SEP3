@@ -40,13 +40,13 @@ public class UserFileDao : IUserDao
 
     public async Task<User?> GetByUsernameAsync(string userName)
     {
-        string uri = $"/user/{userName}";
+        string uri = $"/user/userName?userName={userName}";
         HttpResponseMessage response = await client.GetAsync(uri);
         string result = await response.Content.ReadAsStringAsync();
 
         if (!response.IsSuccessStatusCode)
         {
-            throw new Exception(result);
+            return null;
         }
 
         User user = JsonSerializer.Deserialize<User>(result, new JsonSerializerOptions
@@ -58,7 +58,7 @@ public class UserFileDao : IUserDao
 
     public async Task<IEnumerable<User>> GetAsync(SearchUserParametersDto? searchParameters = null)
     {
-        HttpResponseMessage response = await client.GetAsync("/user/all");
+        HttpResponseMessage response = await client.GetAsync("/user");
         string result = await response.Content.ReadAsStringAsync();
 
         if (!response.IsSuccessStatusCode)
