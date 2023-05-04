@@ -11,7 +11,6 @@ public class AuthService : IAuthService
 
         new User
         {
-            
             Password = "1234",
             UserName = "Chris",
             SecurityLevel = 4

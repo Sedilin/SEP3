@@ -28,6 +28,11 @@
             </div>
         </div>
     </NotAuthorized>
+    <Authorized>
+        <div class="card">
+            @* <h3>Hello, @context.User.Identity.Name</h3> *@
+        </div>
+    </Authorized>
 </AuthorizeView>
 
 @code {
@@ -37,14 +42,14 @@
     
     private async Task LoginAsync()
     {
-        Console.WriteLine("works login");
         errorLabel = "";
         try
         {
-            Console.WriteLine("heheh");
-
+    
             await authService.LoginAsync(userName, password);
+           
             navMgr.NavigateTo("/");
+       
         }
         catch (Exception e)
         {

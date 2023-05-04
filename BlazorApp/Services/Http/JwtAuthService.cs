@@ -9,7 +9,7 @@ namespace BlazorApp.Services.Http;
 
 public class JwtAuthService : IAuthService
 {
-    private readonly HttpClient client = new();
+    private readonly HttpClient _client = new();
 
     // this private variable for simple caching
     public static string? Jwt { get; private set; } = "";
@@ -18,6 +18,7 @@ public class JwtAuthService : IAuthService
 
     public async Task LoginAsync(string username, string password)
     {
+        
         UserLoginDto userLoginDto = new()
         {
             UserName = username,
@@ -26,22 +27,21 @@ public class JwtAuthService : IAuthService
 
         string userAsJson = JsonSerializer.Serialize(userLoginDto);
         StringContent content = new(userAsJson, Encoding.UTF8, "application/json");
-
-        HttpResponseMessage response = await client.PostAsync("https://localhost:7299/auth/login", content);
+       
+        HttpResponseMessage response = await _client.PostAsync("https://localhost:7299/auth/login", content);
         string responseContent = await response.Content.ReadAsStringAsync();
-
+       
         if (!response.IsSuccessStatusCode)
         {
             throw new Exception(responseContent);
         }
-
+       
         string token = responseContent;
         Jwt = token;
-
+       
         ClaimsPrincipal principal = CreateClaimsPrincipal();
-
         OnAuthStateChanged.Invoke(principal);
-    }
+        }
 
     private static ClaimsPrincipal CreateClaimsPrincipal()
     {
