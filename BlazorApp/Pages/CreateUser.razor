@@ -41,7 +41,7 @@
         try
         {
             Console.WriteLine("here");
-            await userService.Create(new UserCreationDto(userName, password));
+            await userService.Create(new UserCreationDto(userName, password, securityLevel:4));
             userName = "";
             password = "";
             resultMsg = "User successfully created";

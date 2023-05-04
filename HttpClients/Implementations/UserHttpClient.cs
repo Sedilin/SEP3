@@ -18,7 +18,7 @@ public class UserHttpClient: IUserService
 
     public async Task<User> Create(UserCreationDto dto)
     {
-        HttpResponseMessage response = await client.PostAsJsonAsync("/user", dto);
+        HttpResponseMessage response = await client.PostAsJsonAsync("/User", dto);
         string result = await response.Content.ReadAsStringAsync();
         if (!response.IsSuccessStatusCode)
         {
@@ -34,7 +34,7 @@ public class UserHttpClient: IUserService
 
     public async Task<IEnumerable<User>> GetUsers(string? usernameContains = null)
     {
-        string uri = "/user";
+        string uri = "/User";
         if (!string.IsNullOrEmpty(usernameContains))
         {
             uri += $"?username={usernameContains}";

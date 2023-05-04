@@ -1,6 +1,8 @@
 @page "/ViewUsers"
+@attribute [Authorize]
 @using HttpClients.ClientInterfaces
 @using Domain.Model
+@using Microsoft.AspNetCore.Authorization
 @inject IUserService userService
 
 

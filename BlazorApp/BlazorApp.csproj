@@ -7,6 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="7.0.5" />
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="7.0.1" />
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="7.0.1" PrivateAssets="all" />
     </ItemGroup>
@@ -14,10 +15,6 @@
     <ItemGroup>
       <ProjectReference Include="..\HttpClients\HttpClients.csproj" />
       <ProjectReference Include="..\Shared\Shared.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Auth" />
     </ItemGroup>
 
     <ItemGroup>
