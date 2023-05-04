@@ -1,3 +1,5 @@
+using System.Net.Http.Json;
+using System.Text.Json;
 using Application.DaoInterfaces;
 using Domain.DTOs;
 using Domain.Model;
@@ -6,58 +8,69 @@ namespace FileData.DAOs;
 
 public class UserFileDao : IUserDao
 {
-    private readonly FileContext context;
+    private readonly HttpClient client;
 
-    public UserFileDao(FileContext context)
+    public UserFileDao(HttpClient client)
     {
-        this.context = context;
+        this.client = client;
     }
 
-    public Task<User> CreateAsync(User user)
+    public async Task<User> CreateAsync(User user)
     {
         int userId = 1;
-        if (context.Users.Any())
+        IEnumerable<User> users = await GetAsync();
+        
+        if (users.Any())
         {
-            userId = context.Users.Max(u => u.Id);
+            userId = users.Max(u => u.Id);
             userId++;
         }
 
         user.Id = userId;
+        
+        HttpResponseMessage response = await client.PostAsJsonAsync("/user", user);
+        string result = await response.Content.ReadAsStringAsync();
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new Exception(result);
+        }
+        return user;
 
-        context.Users.Add(user);
-        context.SaveChanges();
-
-        return Task.FromResult(user);
     }
 
-    public Task<User?> GetByUsernameAsync(string userName)
+    public async Task<User?> GetByUsernameAsync(string userName)
     {
-        if (context.Users == null)
+        string uri = $"/user/userName?userName={userName}";
+        HttpResponseMessage response = await client.GetAsync(uri);
+        string result = await response.Content.ReadAsStringAsync();
+
+        if (!response.IsSuccessStatusCode)
         {
             return null;
         }
-        User? existing = context.Users.FirstOrDefault(u =>
-            u.UserName.Equals(userName, StringComparison.OrdinalIgnoreCase)
-        );
-        return Task.FromResult(existing);
+
+        User user = JsonSerializer.Deserialize<User>(result, new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        })!;
+        return user;
     }
 
-    public Task<IEnumerable<User>> GetAsync(SearchUserParametersDto searchParameters)
+    public async Task<IEnumerable<User>> GetAsync(SearchUserParametersDto? searchParameters = null)
     {
-        IEnumerable<User> users = context.Users.AsEnumerable();
-        if (searchParameters.UsernameContains != null)
+        HttpResponseMessage response = await client.GetAsync("/user");
+        string result = await response.Content.ReadAsStringAsync();
+
+        if (!response.IsSuccessStatusCode)
         {
-            users = context.Users.Where(u => u.UserName.Contains(searchParameters.UsernameContains, StringComparison.OrdinalIgnoreCase));
+            throw new Exception(result);
         }
 
-        return Task.FromResult(users);
-    }
+        IEnumerable<User> users = JsonSerializer.Deserialize<IEnumerable<User>>(result, new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        })!;
+        return users;
 
-    public Task<User?> GetByIdAsync(int id)
-    {
-        User? existing = context.Users.FirstOrDefault(u =>
-            u.Id == id
-        );
-        return Task.FromResult(existing);
     }
 }

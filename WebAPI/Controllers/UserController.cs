@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Application.LogicInterfaces;
 using Domain.DTOs;
 using Domain.Model;
@@ -23,7 +24,7 @@ public class UserController : ControllerBase
         try
         {
             User user = await userLogic.CreateAsync(dto);
-            return Created($"/users/{user.Id}", user);
+            return Created($"/user/{user.Id}", user);
         }
         catch (Exception e)
         {
@@ -33,7 +34,7 @@ public class UserController : ControllerBase
     }
     
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<User>>> GetAsync( string? username)
+    public async Task<ActionResult<IEnumerable<User>>> GetAsync( string? username = null)
     {
         try
         {

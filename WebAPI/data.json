@@ -57,28 +57,8 @@
     },
     {
       "Id": 11,
-      "UserName": "Tina",
-      "Password": "1234"
-    },
-    {
-      "Id": 12,
-      "UserName": "Adrian",
-      "Password": "1234"
-    },
-    {
-      "Id": 13,
-      "UserName": "Andreea",
-      "Password": "1234"
-    },
-    {
-      "Id": 14,
-      "UserName": "Petra",
-      "Password": "1234"
-    },
-    {
-      "Id": 15,
-      "UserName": "papp",
-      "Password": "1234"
+      "UserName": "haha",
+      "Password": "dasdasd"
     }
   ]
 }

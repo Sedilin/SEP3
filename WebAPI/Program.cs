@@ -14,10 +14,15 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddScoped<FileContext>();
 builder.Services.AddScoped<IUserDao, UserFileDao>();
 builder.Services.AddScoped<IUserLogic, UserLogic>();
 
+builder.Services.AddScoped(
+    sp => 
+        new HttpClient { 
+            BaseAddress = new Uri("http://localhost:8080") 
+        }
+);
 
 var app = builder.Build();
 
