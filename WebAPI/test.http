@@ -1,4 +1,4 @@
-POST https://localhost:7299
+POST https://localhost:7299/auth/login
 Content-Type: application/json
 
 { "UserName":  "Chris", "Password":  "1234"}
