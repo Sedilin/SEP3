@@ -1,4 +1,9 @@
 POST https://localhost:7299/auth/login
 Content-Type: application/json
 
-{ "UserName":  "Chris", "Password":  "1234"}
+{ "UserName":  "Tina", "Password":  "1234"}
+
+###
+
+GET https://localhost:7299/
+Authorization: eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJKV1RTZXJ2aWNlQWNjZXNzVG9rZW4iLCJqdGkiOiIzOGQxN2JmOS1lM2VlLTRhOTgtODQzMS01N2E0NjdiMTdjMTgiLCJpYXQiOiIwNC8wNS8yMDIzIDEzOjI4OjA1IiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6IlRpbmEiLCJpZCI6IjAiLCJleHAiOjE2ODMyMTA0ODUsImlzcyI6IkpXVEF1dGhlbnRpY2F0aW9uU2VydmVyIiwiYXVkIjoiSldUU2VydmljZUJsYXpvcldhc21DbGllbnQifQ.kHK1S4-ZvWBrgdWV-kA9pQB6QELUZAUJAgRd2Wiis0JczjalG8uYpyst4rKCq2nnjGsB7iFJDMbDRADfMSCf2A
