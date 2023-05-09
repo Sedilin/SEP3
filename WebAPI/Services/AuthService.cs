@@ -6,17 +6,19 @@ namespace WebAPI.Services;
 
 public class AuthService : IAuthService
 {
-    private readonly IList<User> users = new List<User>()
+    private readonly IList<User> users = new List<User>
     {
 
         new User
         {
+            Id = 1,
             Password = "1234",
             UserName = "Chris",
             SecurityLevel = 4
         },
         new User
         {
+            Id = 2,
             Password = "1234",
             UserName = "Tina",
             SecurityLevel = 4
@@ -41,11 +43,6 @@ public class AuthService : IAuthService
         return Task.FromResult(existingUser);
     }
 
-    public Task<User> GetUser(string username, string password)
-    {
-        throw new NotImplementedException();
-    }
-
     public Task RegisterUser(User user)
     {
 
@@ -66,26 +63,4 @@ public class AuthService : IAuthService
         
         return Task.CompletedTask;
     }
-
-    public Task LoginAsync(string username, string password)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task LogoutAsync()
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task RegisterAsync(User user)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<ClaimsPrincipal> GetAuthAsync()
-    {
-        throw new NotImplementedException();
-    }
-
-    public Action<ClaimsPrincipal> OnAuthStateChanged { get; set; }
 }

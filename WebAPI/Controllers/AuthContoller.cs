@@ -30,7 +30,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost, Route("login")]
-    public async Task<ActionResult> Login([FromBody] UserLoginDto userLoginDto)
+    public async Task<ActionResult> Login([FromBody]UserLoginDto userLoginDto)
     {
         try
         {
@@ -78,11 +78,5 @@ public class AuthController : ControllerBase
             new Claim("SecurityLevel", user.SecurityLevel.ToString())
         };
         return claims.ToList();
-    }
-    
-    [HttpGet("allowanon"), AllowAnonymous]
-    public ActionResult GetAsAnon()
-    {
-        return Ok("This was accepted as anonymous");
     }
 }
