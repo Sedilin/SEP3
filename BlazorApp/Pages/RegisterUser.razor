@@ -1,0 +1,58 @@
+@page "/RegisterUser"
+@using HttpClients.ClientInterfaces
+@using Domain.DTOs
+@inject IUserService userService
+
+
+<h1> <span class="badge bg-secondary align-content-center">Create your Account Here</span></h1>
+
+
+<div class="card">
+    <h3>Create User</h3>
+    <div class="form-group field">
+        <label>User name:</label>
+        <input type="text" @bind="Username" @bind:event="oninput"/>
+        <label>Password:</label>
+        <input type="text" @bind="Password" @bind:event="oninput"/>
+        <label>User Type:</label>
+        <input type="text" @bind="UserType" @bind:event="oninput"/>
+        @if (!string.IsNullOrEmpty(resultMsg))
+        {
+            <label style="color: @color">@resultMsg</label>
+        }
+    </div>
+    <div class="button-row">
+        <button @onclick="Create" disabled="@(string.IsNullOrEmpty(Username))" class="acceptbtn">Create</button>
+    </div>
+</div>
+
+@code {
+    private string Username = "";
+    private string Password = "";
+    private string UserType = "User";
+    private int SecurityLevel = 4;
+    private string resultMsg = "";
+    private string color = "";
+    
+    private async Task Create()
+    {
+        resultMsg = "";
+
+        try
+        {
+            Console.WriteLine("here");
+            await userService.Create(new UserCreationDto(Username, Password, SecurityLevel,UserType));
+            Username = "";
+            Password = "";
+            UserType = "User";
+            resultMsg = "User successfully created";
+            color = "green";
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            resultMsg = e.Message;
+            color = "red";
+        }
+    }
+}

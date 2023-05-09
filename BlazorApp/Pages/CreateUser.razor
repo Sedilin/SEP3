@@ -31,6 +31,7 @@
 @code {
     private string userName = "";
     private string password = "";
+    private string userType = "User";
     private string resultMsg = "";
     private string color = "";
     
@@ -41,9 +42,10 @@
         try
         {
             Console.WriteLine("here");
-            await userService.Create(new UserCreationDto(userName, password, securityLevel:4));
+            await userService.Create(new UserCreationDto(userName, password, securityLevel:4,userType));
             userName = "";
             password = "";
+            userType = "User";
             resultMsg = "User successfully created";
             color = "green";
         }

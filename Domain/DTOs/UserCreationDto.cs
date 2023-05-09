@@ -4,7 +4,6 @@ public class UserCreationDto
 {
     public string UserName { get;}
     public string Password { get;}
-    
     public int SecurityLevel { get; set; }
     public string UserType { get; set; }
 
