@@ -16,7 +16,7 @@
     <ItemGroup>
       <ProjectReference Include="..\Application\Application.csproj" />
       <ProjectReference Include="..\BlazorApp\BlazorApp.csproj" />
-      <ProjectReference Include="..\FileData\FileData.csproj" />
+      <ProjectReference Include="..\DbConnection\DbConnection.csproj" />
       <ProjectReference Include="..\HttpClients\HttpClients.csproj" />
       <ProjectReference Include="..\Shared\Shared.csproj" />
     </ItemGroup>
@@ -24,10 +24,6 @@
     <ItemGroup>
       <Compile Remove="WeatherForecast.cs" />
       <Compile Remove="Controllers\WeatherForecastController.cs" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Services\" />
     </ItemGroup>
 
 </Project>

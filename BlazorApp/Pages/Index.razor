@@ -27,7 +27,7 @@
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         userName = authState.User.Identity.Name;
 
-        IEnumerable<User> users = await userService.GetUsers(userName);
+        IEnumerable<User> users = await userService.GetUsers(userName); // application layer
 
         User? user = users.FirstOrDefault(u => u.UserName.Equals(userName));
         user.UserType = "Tutor";

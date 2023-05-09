@@ -4,7 +4,7 @@ using Application.DaoInterfaces;
 using Domain.DTOs;
 using Domain.Model;
 
-namespace FileData.DAOs;
+namespace DbConnection.DAOs;
 
 public class UserFileDao : IUserDao
 {
