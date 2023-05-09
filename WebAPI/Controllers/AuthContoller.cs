@@ -1,12 +1,11 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Application.LogicInterfaces;
 using Domain.DTOs;
 using Domain.Model;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
-using WebAPI.Services;
 
 namespace WebAPI.Controllers;
 [ApiController]
@@ -14,18 +13,18 @@ namespace WebAPI.Controllers;
 public class AuthController : ControllerBase
 {
     private readonly IConfiguration config;
-    private readonly IAuthService authService;
+    private readonly IUserLogic userLogic;
 
-    public AuthController(IConfiguration config, IAuthService authService)
+    public AuthController(IConfiguration config, IUserLogic userLogic)
     {
         this.config = config;
-        this.authService = authService;
+        this.userLogic = userLogic;
     }
 
     [HttpPost, Route("register")]
-    public async Task<ActionResult> Register([FromBody] User user)
+    public async Task<ActionResult> Register([FromBody] UserCreationDto user)
     {
-        await authService.RegisterUser(user);
+        await userLogic.CreateAsync(user);
         return Ok();
     }
 
@@ -34,7 +33,7 @@ public class AuthController : ControllerBase
     {
         try
         {
-            User user = await authService.ValidateUser(userLoginDto.UserName, userLoginDto.Password);
+            User user = await userLogic.ValidateUser(userLoginDto.UserName, userLoginDto.Password);
             string token = GenerateJwt(user);
         
             return Ok(token);

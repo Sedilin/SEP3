@@ -34,6 +34,27 @@ public class UserLogic : IUserLogic
         return userDao.GetAsync(searchParameters);
     }
 
+    public async Task<User> ValidateUser(string username, string password)
+    {
+        SearchUserParametersDto parameters = new(username);
+        IEnumerable<User> users = await GetAsync(parameters);
+        
+        User? existingUser = users.FirstOrDefault(u => 
+            u.UserName.Equals(username, StringComparison.OrdinalIgnoreCase));
+        
+        if (existingUser == null)
+        {
+            throw new Exception("User not found");
+        }
+
+        if (!existingUser.Password.Equals(password))
+        {
+            throw new Exception("Password mismatch");
+        }
+
+        return existingUser;
+    }
+
     private static void ValidateData(UserCreationDto userToCreate)
     {
         string userName = userToCreate.UserName;
