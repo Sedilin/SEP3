@@ -1,5 +1,38 @@
 ﻿@page "/"
+@using Domain.DTOs
+@using Domain.Model
+@using HttpClients.ClientInterfaces
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IUserService userService
 
 <PageTitle>Index</PageTitle>
+<AuthorizeView>
+    <NotAuthorized>
+        <h1> <span class="badge bg-secondary align-content-center">Tutoring4You Homepage</span></h1>
+    </NotAuthorized>
+    <Authorized>
+        <h1> <span class="badge bg-secondary align-content-center">Tutoring4You Homepage</span></h1>
+        <div class="field">
+            <button class="loginbtn" @onclick="BecomeTutor">Become a tutor</button>
+        </div>
+    </Authorized>
+</AuthorizeView>
 
-<h1> <span class="badge bg-secondary align-content-center">Tutoring4You Homepage</span></h1>
+@code
+{
+    private string userName = "";
+
+    private async Task BecomeTutor()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        userName = authState.User.Identity.Name;
+
+        IEnumerable<User> users = await userService.GetUsers(userName);
+
+        User? user = users.FirstOrDefault(u => u.UserName.Equals(userName));
+        user.UserType = "Tutor";
+
+        Console.WriteLine(user);
+    }
+}
+

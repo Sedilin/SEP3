@@ -1,5 +1,6 @@
 @page "/Login"
 @using BlazorApp.Services
+@using Domain.DTOs
 @inject IAuthService authService
 @inject NavigationManager navMgr
 
@@ -49,7 +50,7 @@
     
             await authService.LoginAsync(userName, password);
             navMgr.NavigateTo("/");
-       
+
         }
         catch (Exception e)
         {
