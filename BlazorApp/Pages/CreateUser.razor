@@ -3,11 +3,10 @@
 @using HttpClients.ClientInterfaces
 @inject IUserService userService;
 
+<h1> <span class="badge bg-secondary align-content-center">Create a Profile</span></h1>
 <div class="card" style="width:400px">
   <img class="card-img-top" src="icons/log-in.png" alt="Card image">
   <div class="card-body">
-    <h4 class="card-title">Register</h4>
-      <p class="card-text">Create a profile.</p>
       <div class="row-cols-auto content  clearfix align-content-center">
               <label>Username:</label>
               <input type="text" @bind="userName" @bind:event="oninput"/>
