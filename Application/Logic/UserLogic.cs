@@ -1,6 +1,5 @@
 using Application.DaoInterfaces;
 using Application.LogicInterfaces;
-
 using Domain.DTOs;
 using Domain.Model;
 
@@ -18,19 +17,24 @@ public class UserLogic : IUserLogic
     public async Task<User> CreateAsync(UserCreationDto dto)
     {
         User? existing = await userDao.GetByUsernameAsync(dto.UserName);
-        if (existing != null)
+        if (existing.UserName !=null)
+        {
             throw new Exception("Username already taken!");
+        }
 
         ValidateData(dto);
+        
         User userToCreate = new User
         {
             UserName = dto.UserName,
             Password = dto.Password,
             UserType = dto.UserType
         };
-        
+
+
         User createdUser = await userDao.CreateAsync(userToCreate);
-    
+        
+
         return createdUser;
     }
 
@@ -43,10 +47,10 @@ public class UserLogic : IUserLogic
     {
         SearchUserParametersDto parameters = new(username);
         IEnumerable<User> users = await GetAsync(parameters);
-        
-        User? existingUser = users.FirstOrDefault(u => 
+
+        User? existingUser = users.FirstOrDefault(u =>
             u.UserName.Equals(username, StringComparison.OrdinalIgnoreCase));
-        
+
         if (existingUser == null)
         {
             throw new Exception("User not found");

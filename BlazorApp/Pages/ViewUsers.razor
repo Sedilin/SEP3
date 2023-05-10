@@ -50,7 +50,7 @@ else
         try
         {
             users = await userService.GetUsers();
-            users = users.Where(u => u.UserType.Equals("Tutor"));
+            users = users.Where(u => u.UserType.Equals("tutor"));
         }
         catch (Exception e)
         {

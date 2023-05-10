@@ -1,4 +1,4 @@
-POST https://localhost:7299/auth/login
+POST https://localhost:8080/auth/login
 Content-Type: application/json
 
 { "UserName":  "Chris", "Password":  "1234"}
@@ -7,3 +7,6 @@ Content-Type: application/json
 
 GET https://localhost:7299/Test/authorized
 Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJKV1RTZXJ2aWNlQWNjZXNzVG9rZW4iLCJqdGkiOiIwYWVjMDE1NS0yNDc4LTQ4ZGEtYmUwYi05M2M4ZTYwZDMyNzciLCJpYXQiOiIwNi8wNS8yMDIzIDE1LjAyLjM2IiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6IkNocmlzIiwiU2VjdXJpdHlMZXZlbCI6IjQiLCJleHAiOjE2ODMzODg5NTYsImlzcyI6IkpXVEF1dGhlbnRpY2F0aW9uU2VydmVyIiwiYXVkIjoiSldUU2VydmljZUJsYXpvcldhc21DbGllbnQifQ.yuKRR9XuX1dhQNo8Cf5iWEevWS9E9KesH6gK0KOCOaVLIBkegT-w6HcDJFToe_AP9Y63rCWXnCuzNZ2sAXC9cA
+
+###
+GET https://localhost:7299/user/Gabi

@@ -42,6 +42,7 @@
             Console.WriteLine("here");
             await userService.Create(new UserCreationDto(userName, password, "User"));
             userName = "";
+            password = "";
             resultMsg = "User successfully created";
             color = "green";
         }
