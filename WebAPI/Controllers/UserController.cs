@@ -48,4 +48,19 @@ public class UserController : ControllerBase
             return StatusCode(500, e.Message);
         }
     }
+    
+    [HttpPost("newTutor")]
+    public async Task<ActionResult<User>> PostNewTutorAsync(UserToTutorDto dto)
+    {
+        try
+        {
+            User user = await userLogic.PostNewTutorAsync(dto);
+            return Ok(user);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return StatusCode(500, e.Message);
+        }
+    }
 }

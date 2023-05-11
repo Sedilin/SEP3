@@ -55,7 +55,7 @@ public class UserHttpClient: IUserService
 
     public async Task<User> BecomeTutor(UserToTutorDto dto)
     {
-        HttpResponseMessage response = await client.PostAsJsonAsync("/Tutor", dto);
+        HttpResponseMessage response = await client.PostAsJsonAsync("/User/newTutor", dto);
         string result = await response.Content.ReadAsStringAsync();
         if (!response.IsSuccessStatusCode)
         {

@@ -17,13 +17,13 @@ public class UserLogic : IUserLogic
     public async Task<User> CreateAsync(UserCreationDto dto)
     {
         User? existing = await userDao.GetByUsernameAsync(dto.UserName);
-        if (existing.UserName !=null)
+        if (existing?.UserName != null)
         {
             throw new Exception("Username already taken!");
         }
 
         ValidateData(dto);
-        
+
         User userToCreate = new User
         {
             UserName = dto.UserName,
@@ -33,7 +33,7 @@ public class UserLogic : IUserLogic
 
 
         User createdUser = await userDao.CreateAsync(userToCreate);
-        
+
 
         return createdUser;
     }
@@ -62,6 +62,16 @@ public class UserLogic : IUserLogic
         }
 
         return existingUser;
+    }
+
+    public Task<User> PostNewTutorAsync(UserToTutorDto dto)
+    {
+        if (dto.Description == null)
+        {
+            throw new Exception("Description cannot be empty!");
+        }
+        
+        return userDao.PostNewTutorAsync(dto);
     }
 
     private static void ValidateData(UserCreationDto userToCreate)

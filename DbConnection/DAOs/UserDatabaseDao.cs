@@ -6,42 +6,32 @@ using Domain.Model;
 
 namespace DbConnection.DAOs;
 
-public class UserFileDao : IUserDao
+public class UserDatabaseDao : IUserDao
 {
     private readonly HttpClient client;
 
-    public UserFileDao(HttpClient client)
+    public UserDatabaseDao(HttpClient client)
     {
         this.client = client;
     }
 
     public async Task<User> CreateAsync(User user)
     {
-        Console.WriteLine(1);
-        // int userId = 1;
-        // IEnumerable<User> users = await GetAsync();
-        //
-        // if (users.Any())
-        // {
-        //     userId = users.Max(u => u.Id);
-        //     userId++;
-        // }
-        //
-        // user.Id = userId;
-        
         HttpResponseMessage response = await client.PostAsJsonAsync("/user", user);
-        Console.WriteLine(user.UserName + " " + user.Password + " " + user.UserType + " " + user.Id);
-        Console.WriteLine(2);
+
         string result = await response.Content.ReadAsStringAsync();
-        Console.WriteLine(3);
+
         if (!response.IsSuccessStatusCode)
         {
-            Console.WriteLine(5);
             throw new Exception(result);
         }
-        Console.WriteLine(4);
-        return user;
 
+        User userBack = JsonSerializer.Deserialize<User>(result, new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        })!;
+
+        return userBack;
     }
 
     public async Task<User?> GetByUsernameAsync(string userName)
@@ -77,6 +67,24 @@ public class UserFileDao : IUserDao
             PropertyNameCaseInsensitive = true
         })!;
         return users;
+    }
 
+    public async Task<User> PostNewTutorAsync(UserToTutorDto dto)
+    {
+        HttpResponseMessage response = await client.PostAsJsonAsync("/newTutor", dto);
+
+        string result = await response.Content.ReadAsStringAsync();
+
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new Exception(result);
+        }
+
+        User user = JsonSerializer.Deserialize<User>(result, new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        })!;
+
+        return user;
     }
 }
