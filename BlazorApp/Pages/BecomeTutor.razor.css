@@ -1,0 +1,18 @@
+.user-card {
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    display: inline-block;
+    margin: 15px;
+    padding: 5px;
+    border-radius: 10px;
+}
+.confirmbtn {
+    background-color:lightgreen;
+    border-radius: 5px;
+    margin-top: 10px;
+    padding: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+.field {
+    margin-top: 10px;
+}

@@ -53,8 +53,19 @@ public class UserHttpClient: IUserService
         return users;
     }
 
-    public Task<User> ValidateUser(string userName, string password)
+    public async Task<User> BecomeTutor(UserToTutorDto dto)
     {
-        throw new NotImplementedException();
+        HttpResponseMessage response = await client.PostAsJsonAsync("/Tutor", dto);
+        string result = await response.Content.ReadAsStringAsync();
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new Exception(result);
+        }
+
+        User user = JsonSerializer.Deserialize<User>(result, new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        })!;
+        return user;
     }
 }
