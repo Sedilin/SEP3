@@ -9,9 +9,10 @@ public class AuthorizationPolicies
     {
         services.AddAuthorizationCore(options =>
         {
-            options.AddPolicy("SecurityLevel4", a =>
-                a.RequireAuthenticatedUser().RequireClaim("SecurityLevel", "4"));
-            
+            options.AddPolicy("MustBeUser", a =>
+                a.RequireAuthenticatedUser().RequireClaim("Type", "User"));
+            options.AddPolicy("MustBeTutor", a =>
+                a.RequireAuthenticatedUser().RequireClaim("Type", "Tutor"));
         });
     }
 }

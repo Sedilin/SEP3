@@ -71,7 +71,7 @@ public class UserDatabaseDao : IUserDao
 
     public async Task<User> PostNewTutorAsync(UserToTutorDto dto)
     {
-        HttpResponseMessage response = await client.PostAsJsonAsync("/newTutor", dto);
+        HttpResponseMessage response = await client.PostAsJsonAsync("/user/newTutor", dto);
 
         string result = await response.Content.ReadAsStringAsync();
 

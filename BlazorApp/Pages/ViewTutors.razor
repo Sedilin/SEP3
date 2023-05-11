@@ -5,9 +5,21 @@
 @using Microsoft.AspNetCore.Authorization
 @inject IUserService userService
 
-
+@* The filter option [NOT FINISHED]
 <h1> <span class="badge bg-secondary align-content-center">Tutor Dashboard</span></h1>
-
+<div class="container-fluid mt-2 d-inline-flex">
+    <label style="text-align: center">UserName:</label>
+    <input type="text" @bind="userName" style="padding-right: 10px">
+    <select class="form-control" id="courses-dropdown" @bind="course" style="width: 200px">
+        <option value="" selected disabled hidden>Course</option>
+        <option value="DMA">DMA</option>
+        <option value="SDJ1">SDJ1</option>
+        <option value="SDJ2">SDJ2</option>
+        <option value="SDJ3">SDJ3</option>
+        <option value="DNP">DNP</option>
+    </select>
+</div>
+*@
 @if (!string.IsNullOrEmpty(msg))
 {
     <div>
@@ -21,7 +33,7 @@
 }
 else if (!users.Any())
 {
-    <span>No users to be found</span>
+    <span>No tutors to be found</span>
 }
 else
 {
@@ -31,9 +43,9 @@ else
             <div class="user-card" style="width:200px">
               <img class="card-img-top" src="icons/user.png" alt="Card image">
               <div class="card-body">
-                <h4 class="card-title">@user.UserName</h4>
-                <p class="card-text">My personal Desription.</p>
-                <a href="#" class="btn btn-primary">See Profile</a>
+                  <h4 class="card-title">@user.UserName</h4>
+                  <p class="card-text">My personal Desription.</p>
+                  <a href="#" class="btn btn-primary">See Profile</a>
               </div>
             </div>
         }
@@ -43,6 +55,8 @@ else
 @code {
     private IEnumerable<User>? users;
     private string msg = "";
+    private string course;
+    private string userName;
 
     protected override async Task OnInitializedAsync()
     {
@@ -50,7 +64,7 @@ else
         try
         {
             users = await userService.GetUsers();
-            users = users.Where(u => u.UserType.Equals("tutor"));
+            users = users.Where(u => u.UserType.Equals("tutor", StringComparison.OrdinalIgnoreCase));
         }
         catch (Exception e)
         {
