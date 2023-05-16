@@ -5,6 +5,7 @@
 @using Microsoft.AspNetCore.Authorization
 @using Domain.DTOs
 @inject IUserService userService
+@inject NavigationManager navMgr
 
 @* The filter option [NOT FINISHED]
 <h1> <span class="badge bg-secondary align-content-center">Tutor Dashboard</span></h1>
@@ -46,18 +47,19 @@ else
               <div class="card-body">
                   <h4 class="card-title">@user.UserName</h4>
                   <p class="card-text">@TruncateDescription(descriptions[user.UserName])</p>
-                  <a href="#" class="btn btn-primary">See Profile</a>
               </div>
+              <button class="viewProfilebtn" @onclick="(() => ViewProfileAsync(user.UserName))">View Profile</button>
             </div>
         }
     </div>
 }
 
 @code {
+
+    string username = "username";
     private IEnumerable<User>? users;
     private string msg = "";
     private string course;
-    private string userName;
     private Dictionary<string, string> descriptions = new();
 
     protected override async Task OnInitializedAsync()
@@ -103,4 +105,10 @@ else
             return description.Substring(0, maxLength) + "...";
         }
     }
+
+    private async Task ViewProfileAsync(string userName)
+    {
+        navMgr.NavigateTo($"/ViewProfile/{userName}");
+    }
+
 }
