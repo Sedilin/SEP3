@@ -80,7 +80,7 @@ public class UserController : ControllerBase
     }
 
     [HttpGet("tutorByUsername")]
-    public async Task<ActionResult<User>> GetTutorByUsername(string userName)
+    public async Task<ActionResult<User?>> GetTutorByUsername(string userName)
     {
         try
         {

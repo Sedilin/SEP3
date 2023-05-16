@@ -84,7 +84,7 @@ public class UserLogic : IUserLogic
         User? user = await userDao.GetTutorByUsername(dto);
         if (user == null)
         {
-            throw new Exception("User not found.");
+            throw new Exception("User not found");
         }
 
         return user;
