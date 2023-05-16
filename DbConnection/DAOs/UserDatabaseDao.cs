@@ -100,4 +100,22 @@ public class UserDatabaseDao : IUserDao
         }
         return result;
     }
+
+    public async Task<User?> GetTutorByUsername(SearchUserParametersDto dto)
+    {
+        string uri = $"/user/tutorByUsername?userName={dto.UsernameContains}";
+        HttpResponseMessage response = await client.GetAsync(uri);
+        string result = await response.Content.ReadAsStringAsync();
+
+        if (!response.IsSuccessStatusCode)
+        {
+            return null;
+        }
+        
+        User? user = JsonSerializer.Deserialize<User>(result, new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        })!;
+        return user;
+    }
 }

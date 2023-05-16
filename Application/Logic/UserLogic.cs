@@ -79,6 +79,17 @@ public class UserLogic : IUserLogic
         return userDao.GetDescriptionAsync(parameters);
     }
 
+    public async Task<User?> GetTutorByUsername(SearchUserParametersDto dto)
+    {
+        User? user = await userDao.GetTutorByUsername(dto);
+        if (user == null)
+        {
+            throw new Exception("User not found.");
+        }
+
+        return user;
+    }
+
     private static void ValidateData(UserCreationDto userToCreate)
     {
         string userName = userToCreate.UserName;

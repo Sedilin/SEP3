@@ -11,4 +11,5 @@ public interface IUserDao
     Task<IEnumerable<User>> GetAsync(SearchUserParametersDto? searchParameters);
     Task<User> PostNewTutorAsync(UserToTutorDto dto);
     Task<string> GetDescriptionAsync(SearchUserParametersDto parameters);
+    Task<User?> GetTutorByUsername(SearchUserParametersDto dto);
 }
