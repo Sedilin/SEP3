@@ -5,22 +5,24 @@
 @using Microsoft.AspNetCore.Authorization
 @using Domain.DTOs
 @inject IUserService userService
+@inject NavigationManager navMgr
 
-@* The filter option [NOT FINISHED]
 <h1> <span class="badge bg-secondary align-content-center">Tutor Dashboard</span></h1>
 <div class="container-fluid mt-2 d-inline-flex">
-    <label style="text-align: center">UserName:</label>
-    <input type="text" @bind="userName" style="padding-right: 10px">
     <select class="form-control" id="courses-dropdown" @bind="course" style="width: 200px">
-        <option value="" selected disabled hidden>Course</option>
+        <option value="" selected disabled hidden>Select Course</option>
         <option value="DMA">DMA</option>
         <option value="SDJ1">SDJ1</option>
         <option value="SDJ2">SDJ2</option>
         <option value="SDJ3">SDJ3</option>
         <option value="DNP">DNP</option>
     </select>
+    <form class="d-flex">
+        <input class="form-control me-2" type="text" placeholder="Search">
+        <button class="btn btn-primary" type="button">Search</button>
+    </form>
 </div>
-*@
+
 @if (!string.IsNullOrEmpty(msg))
 {
     <div>
@@ -46,18 +48,19 @@ else
               <div class="card-body">
                   <h4 class="card-title">@user.UserName</h4>
                   <p class="card-text">@TruncateDescription(descriptions[user.UserName])</p>
-                  <a href="#" class="btn btn-primary">See Profile</a>
               </div>
+              <button class="viewProfilebtn" @onclick="(() => ViewProfileAsync(user.UserName))">View Profile</button>
             </div>
         }
     </div>
 }
 
 @code {
+
+    string username = "username";
     private IEnumerable<User>? users;
     private string msg = "";
     private string course;
-    private string userName;
     private Dictionary<string, string> descriptions = new();
 
     protected override async Task OnInitializedAsync()
@@ -102,5 +105,10 @@ else
         {
             return description.Substring(0, maxLength) + "...";
         }
+    }
+
+    private async Task ViewProfileAsync(string userName)
+    {
+        navMgr.NavigateTo($"/ViewProfile/{userName}");
     }
 }
