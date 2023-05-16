@@ -63,4 +63,19 @@ public class UserController : ControllerBase
             return StatusCode(500, e.Message);
         }
     }
+    [HttpGet("Description")]
+    public async Task<ActionResult<string>> GetDescriptionAsync( string? username = null)
+    {
+        try
+        {
+            SearchUserParametersDto parameters = new(username);
+            string description = await userLogic.GetDescriptionAsync(parameters);
+            return Ok(description);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return StatusCode(500, e.Message);
+        }
+    }
 }

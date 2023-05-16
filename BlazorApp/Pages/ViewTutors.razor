@@ -3,6 +3,7 @@
 @using HttpClients.ClientInterfaces
 @using Domain.Model
 @using Microsoft.AspNetCore.Authorization
+@using Domain.DTOs
 @inject IUserService userService
 
 @* The filter option [NOT FINISHED]
@@ -40,11 +41,11 @@ else
     <div class="users-container">
         @foreach (User user in users)
         {
-            <div class="user-card" style="width:200px">
+            <div class="user-card" style="width:300px">
               <img class="card-img-top" src="icons/user.png" alt="Card image">
               <div class="card-body">
                   <h4 class="card-title">@user.UserName</h4>
-                  <p class="card-text">My personal Desription.</p>
+                  <p class="card-text">@TruncateDescription(descriptions[user.UserName])</p>
                   <a href="#" class="btn btn-primary">See Profile</a>
               </div>
             </div>
@@ -57,6 +58,7 @@ else
     private string msg = "";
     private string course;
     private string userName;
+    private Dictionary<string, string> descriptions = new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -65,11 +67,40 @@ else
         {
             users = await userService.GetUsers();
             users = users.Where(u => u.UserType.Equals("tutor", StringComparison.OrdinalIgnoreCase));
+
+            await FetchDescriptionsAsync();
         }
         catch (Exception e)
         {
             Console.WriteLine(e);
             msg = e.Message;
+        }
+    }
+    
+    private async Task FetchDescriptionsAsync()
+    {
+        foreach (User user in users)
+        {
+            string description = await GetDescriptionAsync(user.UserName);
+            descriptions[user.UserName] = description;
+        }
+    }
+
+    private async Task<string> GetDescriptionAsync(string UserName)
+    {
+        return await userService.GetDescriptionAsync(UserName);
+    }
+    
+    private string TruncateDescription(string description)
+    {
+        const int maxLength = 50;
+        if (description.Length <= maxLength)
+        {
+            return description;
+        }
+        else
+        {
+            return description.Substring(0, maxLength) + "...";
         }
     }
 }

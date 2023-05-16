@@ -74,6 +74,11 @@ public class UserLogic : IUserLogic
         return userDao.PostNewTutorAsync(dto);
     }
 
+    public Task<string> GetDescriptionAsync(SearchUserParametersDto parameters)
+    {
+        return userDao.GetDescriptionAsync(parameters);
+    }
+
     private static void ValidateData(UserCreationDto userToCreate)
     {
         string userName = userToCreate.UserName;

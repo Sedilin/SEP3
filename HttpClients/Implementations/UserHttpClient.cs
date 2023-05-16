@@ -68,4 +68,22 @@ public class UserHttpClient: IUserService
         })!;
         return user;
     }
+
+    public async Task<string> GetDescriptionAsync(string userName)
+    {
+        string uri = "/User/Description";
+        if (!string.IsNullOrEmpty(userName))
+        {
+            uri += $"?username={userName}";
+        }
+        
+        HttpResponseMessage response = await client.GetAsync(uri);
+        string result = await response.Content.ReadAsStringAsync();
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new Exception(result);
+        }
+        
+        return result;
+    }
 }

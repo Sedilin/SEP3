@@ -87,4 +87,17 @@ public class UserDatabaseDao : IUserDao
 
         return user;
     }
+
+    public async Task<string> GetDescriptionAsync(SearchUserParametersDto parameters)
+    {
+        string uri = $"/user/description?userName={parameters.UsernameContains}";
+        HttpResponseMessage response = await client.GetAsync(uri);
+        string result = await response.Content.ReadAsStringAsync();
+
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new Exception(result);
+        }
+        return result;
+    }
 }
