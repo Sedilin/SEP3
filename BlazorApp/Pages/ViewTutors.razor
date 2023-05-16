@@ -7,21 +7,22 @@
 @inject IUserService userService
 @inject NavigationManager navMgr
 
-@* The filter option [NOT FINISHED]
 <h1> <span class="badge bg-secondary align-content-center">Tutor Dashboard</span></h1>
 <div class="container-fluid mt-2 d-inline-flex">
-    <label style="text-align: center">UserName:</label>
-    <input type="text" @bind="userName" style="padding-right: 10px">
     <select class="form-control" id="courses-dropdown" @bind="course" style="width: 200px">
-        <option value="" selected disabled hidden>Course</option>
+        <option value="" selected disabled hidden>Select Course</option>
         <option value="DMA">DMA</option>
         <option value="SDJ1">SDJ1</option>
         <option value="SDJ2">SDJ2</option>
         <option value="SDJ3">SDJ3</option>
         <option value="DNP">DNP</option>
     </select>
+    <form class="d-flex">
+        <input class="form-control me-2" type="text" placeholder="Search">
+        <button class="btn btn-primary" type="button">Search</button>
+    </form>
 </div>
-*@
+
 @if (!string.IsNullOrEmpty(msg))
 {
     <div>
@@ -110,5 +111,4 @@ else
     {
         navMgr.NavigateTo($"/ViewProfile/{userName}");
     }
-
 }
