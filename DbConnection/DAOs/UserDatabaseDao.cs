@@ -88,9 +88,9 @@ public class UserDatabaseDao : IUserDao
         return user;
     }
 
-    public async Task<string> GetDescriptionAsync(SearchUserParametersDto parameters)
+    public async Task<TutorInformationDto> GetTutorAsync(SearchUserParametersDto parameters)
     {
-        string uri = $"/user/description?userName={parameters.UsernameContains}";
+        string uri = $"/user/tutor?userName={parameters.UsernameContains}";
         HttpResponseMessage response = await client.GetAsync(uri);
         string result = await response.Content.ReadAsStringAsync();
 
@@ -98,7 +98,12 @@ public class UserDatabaseDao : IUserDao
         {
             throw new Exception(result);
         }
-        return result;
+        TutorInformationDto user = JsonSerializer.Deserialize<TutorInformationDto>(result, new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        })!;
+
+        return user;
     }
 
     public async Task<User?> GetTutorByUsername(SearchUserParametersDto dto)

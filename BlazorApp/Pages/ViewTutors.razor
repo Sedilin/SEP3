@@ -84,14 +84,14 @@ else
     {
         foreach (User user in users)
         {
-            string description = await GetDescriptionAsync(user.UserName);
-            descriptions[user.UserName] = description;
+            TutorInformationDto description = await GetDescriptionAsync(user.UserName);
+            descriptions[user.UserName] = description.Description;
         }
     }
 
-    private async Task<string> GetDescriptionAsync(string UserName)
+    private async Task<TutorInformationDto> GetDescriptionAsync(string UserName)
     {
-        return await userService.GetDescriptionAsync(UserName);
+        return await userService.GetTutorAsync(UserName);
     }
     
     private string TruncateDescription(string description)

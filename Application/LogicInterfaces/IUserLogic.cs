@@ -10,6 +10,6 @@ public interface IUserLogic
     Task<IEnumerable<User>> GetAsync(SearchUserParametersDto? searchParameters);
     Task<User> ValidateUser(string username, string password);
     Task<User> PostNewTutorAsync(UserToTutorDto dto);
-    Task<string> GetDescriptionAsync(SearchUserParametersDto parameters);
+    Task<TutorInformationDto> GetTutorAsync(SearchUserParametersDto parameters);
     Task<User?> GetTutorByUsername(SearchUserParametersDto dto);
 }

@@ -69,9 +69,9 @@ public class UserHttpClient: IUserService
         return user;
     }
 
-    public async Task<string> GetDescriptionAsync(string userName)
+    public async Task<TutorInformationDto> GetTutorAsync(string userName)
     {
-        string uri = "/User/Description";
+        string uri = "/User/tutor";
         if (!string.IsNullOrEmpty(userName))
         {
             uri += $"?username={userName}";
@@ -83,7 +83,10 @@ public class UserHttpClient: IUserService
         {
             throw new Exception(result);
         }
-        
-        return result;
+        TutorInformationDto user = JsonSerializer.Deserialize<TutorInformationDto>(result, new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        })!;
+        return user;
     }
 }

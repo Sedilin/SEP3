@@ -1,33 +1,43 @@
 @page "/ViewProfile/{username}"
 @using HttpClients.ClientInterfaces
 @using Domain.Model
+@using Domain.DTOs
 @inject IUserService userService
 @inject NavigationManager navMgr
 
+@if (tutor == null)
+{
+    <span>Loading..</span>
+}
 
+else
+{
     <div class="users-container">
         <div class="user-card" style="width:600px">
-        <h4 class="card-title">@username</h4>
-       
+            <h4 class="card-title">@username</h4>
+
             <div class="card-body">
                 <h4 class="card-body">Courses</h4>
+                @foreach (string course in tutor.Courses)
+                {
+                    <p>@course</p>
+                }
                 <h4 class="card-body">Rating</h4>
                 <h4 class="card-body">Description</h4>
-                <h5 class="card-body" style="border: solid; border-width: thick; border-color: #0b5ed7"> @description</h5>
+                <h5 class="card-body" style="border: solid; border-width: thick; border-color: #0b5ed7"> @tutor.Description</h5>
             </div>
-                 <button class="messagebtn" @onclick="(() => MessageAsync(username))">Message</button>
+            <button class="messagebtn" @onclick="(() => MessageAsync(username))">Message</button>
         </div>
     </div>
-
+}
 @code {
 
     [Parameter]
     public string username { get; set;}
 
-    private string description;
+    private TutorInformationDto? tutor;
     private User users = new User();
     private string msg = "";
-    private string course;
 
 
     protected override async Task OnInitializedAsync()
@@ -35,7 +45,7 @@
         msg = "";
         try
         {
-            description = await userService.GetDescriptionAsync(username);
+            tutor = await userService.GetTutorAsync(username);
         }
         catch (Exception e)
         {

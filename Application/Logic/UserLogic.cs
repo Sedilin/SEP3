@@ -74,9 +74,9 @@ public class UserLogic : IUserLogic
         return userDao.PostNewTutorAsync(dto);
     }
 
-    public Task<string> GetDescriptionAsync(SearchUserParametersDto parameters)
+    public Task<TutorInformationDto> GetTutorAsync(SearchUserParametersDto parameters)
     {
-        return userDao.GetDescriptionAsync(parameters);
+        return userDao.GetTutorAsync(parameters);
     }
 
     public async Task<User?> GetTutorByUsername(SearchUserParametersDto dto)
