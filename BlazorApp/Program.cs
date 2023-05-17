@@ -24,6 +24,7 @@ builder.Services.AddScoped<IUserService, UserHttpClient>();
 builder.Services.AddScoped<ICourseService, CourseHttpClient>();
 builder.Services.AddScoped<IAuthService, JwtAuthService>();
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthProvider>();
+builder.Services.AddScoped<IMessageService, MessageHttpClient>();
 AuthorizationPolicies.AddPolicies(builder.Services);
 
 await builder.Build().RunAsync();

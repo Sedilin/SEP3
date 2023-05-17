@@ -1,13 +1,13 @@
 @page "/MessagePlatform"
 @using HttpClients.ClientInterfaces
 @using Domain.Model
-@inject IUserService userService
+@using System.Threading.Tasks
+@using System.Timers
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IUserService userService;
+@inject IMessageService messageService;
 @inject NavigationManager navMgr
-
-
 <h1> <span class="badge bg-secondary align-content-center">Message Platform</span></h1>
-
-
 @if (!string.IsNullOrEmpty(msg))
 {
     <div>
@@ -35,18 +35,15 @@ else
             </div>
         </div>
         <div class="col-sm-8">
-            <div hidden="@showPanel2"></div>
-            <div hidden="@(showPanel2)">
+            <div hidden="@showPanel1"></div>
+            <div hidden="@(showPanel1)">
                 <div class="card" style="width:600px">
                     <div class="card-body">
-                        <p class="card-text">Use .card-title to add card titles to any heading element. 
-                        The .card-text class is used to remove bottom margins for a element if it is the last child 
-                            (or the only one) inside .card-body. 
-                            The .card-link class adds a blue color to any link, and a hover effect.</p>
+                        <p class="card-text"></p>
                         <a href="#" class="btn btn-primary">Send Message</a>
                         <div>
                             <label for="comment">Write Message:</label>
-                            <textarea class="form-control" rows="5" id="comment" name="text"></textarea>
+                            <textarea class="form-control" rows="5" id="comment" name="text"@bind="msg">@msg</textarea>
                         </div>
                     </div>
                 </div>
@@ -56,22 +53,33 @@ else
 
 }
 @code {
-    
-    bool showPanel2 = true;
-    void Toggle() { showPanel2 = !showPanel2; }
+    bool showPanel1 = true;
+
+    void Toggle()
+    {
+        showPanel1 = !showPanel1;
+    }
     
     private IEnumerable<User>? users;
     string username = "username";
-    private string msg = "";
-    
+    private string msg;
+    private int i = 0;
+    private Timer timer;
+
     protected override async Task OnInitializedAsync()
     {
-        msg = "";
         try
         {
+            msg = "Lol";
+            var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+            username = authState.User.Identity.Name;
             users = await userService.GetUsers();
             users = users.Where(u => u.UserType.Equals("tutor", StringComparison.OrdinalIgnoreCase));
             
+            timer = new Timer(5000); // Refresh every 5 second
+            timer.Elapsed += async (sender, e) => await loop();
+            timer.AutoReset = true;
+            timer.Start();
         }
         catch (Exception e)
         {
@@ -79,5 +87,12 @@ else
             msg = e.Message;
         }
     }
-    
+
+    private async Task loop()
+    {
+        i++;
+        await messageService.Send("test" + i);
+        msg = await messageService.Receive(username);
+        StateHasChanged();
+    }
 }
