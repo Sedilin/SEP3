@@ -16,14 +16,11 @@
 else
 {
     <div class="container-fluid mt-2 d-inline-flex">
-        <select @bind="Courses">
-            @if (Courses != null)
-            {
-                @foreach (string course in Courses)
+        <select @bind="course">
+            @foreach (string course in Courses)
                 {
                     <option value="@course">@course</option>
                 }
-            }
         </select>
         <form class="d-flex">
             <input class="form-control me-2" type="text" @bind="searchByUsername" placeholder="Search">

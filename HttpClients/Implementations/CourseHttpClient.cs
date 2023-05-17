@@ -9,8 +9,11 @@ namespace HttpClients.Implementations;
 public class CourseHttpClient : ICourseService
 {
     private readonly HttpClient client;
-    
-    
+
+    public CourseHttpClient(HttpClient client)
+    {
+        this.client = client;
+    }
     public async Task<IEnumerable<string>> GetCourses(string? course)
     {
         string uri = "/Course";
