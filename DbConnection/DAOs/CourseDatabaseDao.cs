@@ -18,7 +18,7 @@ public class CourseDatabaseDao : ICourseDao
         string uri = "/course";
         if (!string.IsNullOrEmpty(parameter.CourseContains))
         {
-            uri += $"?course={parameter.CourseContains}";
+            uri += $"?courseName={parameter.CourseContains}";
         }
         HttpResponseMessage response = await client.GetAsync(uri);
         string result = await response.Content.ReadAsStringAsync();
