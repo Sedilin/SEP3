@@ -5,18 +5,20 @@
 @using Microsoft.AspNetCore.Authorization
 @using Domain.DTOs
 @inject IUserService userService
+@inject ICourseService CourseService
 @inject NavigationManager navMgr
 
 <h1> <span class="badge bg-secondary align-content-center">Tutor Dashboard</span></h1>
 <div class="container-fluid mt-2 d-inline-flex">
-    <select class="form-control" id="courses-dropdown" @bind="course" style="width: 200px">
-        <option value="" selected disabled hidden>Select Course</option>
-        <option value="DMA">DMA</option>
-        <option value="SDJ1">SDJ1</option>
-        <option value="SDJ2">SDJ2</option>
-        <option value="SDJ3">SDJ3</option>
-        <option value="DNP">DNP</option>
-    </select>
+     <select @bind="Courses">
+                    @if (Courses != null)
+                    {
+                        @foreach (string course in Courses)
+                        {
+                            <option value="@course">@course</option>
+                        }
+                    }
+                </select>
     <form class="d-flex">
         <input class="form-control me-2" type="text" @bind="searchByUsername" placeholder="Search">
         <button class="btn btn-primary" type="button" @onclick="searchTutorByUsername" disabled="@(string.IsNullOrEmpty(searchByUsername))">Search</button>
@@ -62,6 +64,7 @@ else
     private string msg = "";
     private string course;
     public string searchByUsername = "";
+    public IEnumerable<string>? Courses;
     private Dictionary<string, string> descriptions = new();
 
     protected override async Task OnInitializedAsync()
@@ -125,5 +128,18 @@ else
             msg = e.Message;
         }
         
+    }
+
+    private async Task searchByCourse()
+    {
+        try
+        {
+            Courses = await CourseService.GetCourses(course);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            msg = e.Message;
+        }
     }
 }
