@@ -84,12 +84,12 @@ else
     {
         foreach (User user in users)
         {
-            TutorInformationDto description = await GetDescriptionAsync(user.UserName);
+            TutorInformationDto description = await GetTutorAsync(user.UserName);
             descriptions[user.UserName] = description.Description;
         }
     }
 
-    private async Task<TutorInformationDto> GetDescriptionAsync(string UserName)
+    private async Task<TutorInformationDto> GetTutorAsync(string UserName)
     {
         return await userService.GetTutorAsync(UserName);
     }

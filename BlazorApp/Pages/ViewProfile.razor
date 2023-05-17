@@ -37,12 +37,10 @@ else
 
     private TutorInformationDto? tutor;
     private User users = new User();
-    private string msg = "";
 
 
     protected override async Task OnInitializedAsync()
     {
-        msg = "";
         try
         {
             tutor = await userService.GetTutorAsync(username);
@@ -50,7 +48,6 @@ else
         catch (Exception e)
         {
             Console.WriteLine(e);
-            msg = e.Message;
         }
     }
     private async Task MessageAsync(string userName)
