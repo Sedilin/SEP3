@@ -18,8 +18,8 @@
         <option value="DNP">DNP</option>
     </select>
     <form class="d-flex">
-        <input class="form-control me-2" type="text" placeholder="Search">
-        <button class="btn btn-primary" type="button">Search</button>
+        <input class="form-control me-2" type="text" @bind="searchByUsername" placeholder="Search">
+        <button class="btn btn-primary" type="button" @onclick="searchTutorByUsername" disabled="@(string.IsNullOrEmpty(searchByUsername))">Search</button>
     </form>
 </div>
 
@@ -61,6 +61,7 @@ else
     private IEnumerable<User>? users;
     private string msg = "";
     private string course;
+    public string searchByUsername = "";
     private Dictionary<string, string> descriptions = new();
 
     protected override async Task OnInitializedAsync()
@@ -110,5 +111,19 @@ else
     private async Task ViewProfileAsync(string userName)
     {
         navMgr.NavigateTo($"/ViewProfile/{userName}");
+    }
+
+    private async Task searchTutorByUsername()
+    {
+        try
+        {
+            users = new[] { await userService.SearchTutorByUsername(searchByUsername) };
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            msg = e.Message;
+        }
+        
     }
 }

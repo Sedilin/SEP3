@@ -89,4 +89,25 @@ public class UserHttpClient: IUserService
         })!;
         return user;
     }
+
+    public async Task<User> SearchTutorByUsername(string userName)
+    {
+        string uri = "/User/tutorByUsername";
+        if (!string.IsNullOrEmpty(userName))
+        {
+            uri += $"?username={userName}";
+        }
+        
+        HttpResponseMessage response = await client.GetAsync(uri);
+        string result = await response.Content.ReadAsStringAsync();
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new Exception(result);
+        }
+        User user = JsonSerializer.Deserialize<User>(result, new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        })!;
+        return user;
+    }
 }

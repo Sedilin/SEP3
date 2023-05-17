@@ -10,5 +10,6 @@ public interface IUserService
     Task<IEnumerable<User>> GetUsers(string? usernameContains = null);
     Task<User> BecomeTutor(UserToTutorDto dto);
     Task<TutorInformationDto> GetTutorAsync(string userName);
-    
+    Task<User> SearchTutorByUsername(string userName);
+
 }
