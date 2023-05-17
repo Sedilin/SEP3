@@ -5,26 +5,32 @@
 @using Microsoft.AspNetCore.Authorization
 @using Domain.DTOs
 @inject IUserService userService
-@inject ICourseService CourseService
+@inject ICourseService courseService
 @inject NavigationManager navMgr
 
 <h1> <span class="badge bg-secondary align-content-center">Tutor Dashboard</span></h1>
-<div class="container-fluid mt-2 d-inline-flex">
-     <select @bind="Courses">
-                    @if (Courses != null)
-                    {
-                        @foreach (string course in Courses)
-                        {
-                            <option value="@course">@course</option>
-                        }
-                    }
-                </select>
-    <form class="d-flex">
-        <input class="form-control me-2" type="text" @bind="searchByUsername" placeholder="Search">
-        <button class="btn btn-primary" type="button" @onclick="searchTutorByUsername" disabled="@(string.IsNullOrEmpty(searchByUsername))">Search</button>
-    </form>
-</div>
-
+@if (Courses == null)
+{
+    <span>Loading..</span>
+}
+else
+{
+    <div class="container-fluid mt-2 d-inline-flex">
+        <select @bind="Courses">
+            @if (Courses != null)
+            {
+                @foreach (string course in Courses)
+                {
+                    <option value="@course">@course</option>
+                }
+            }
+        </select>
+        <form class="d-flex">
+            <input class="form-control me-2" type="text" @bind="searchByUsername" placeholder="Search">
+            <button class="btn btn-primary" type="button" @onclick="searchTutorByUsername" disabled="@(string.IsNullOrEmpty(searchByUsername))">Search</button>
+        </form>
+    </div>
+}
 @if (!string.IsNullOrEmpty(msg))
 {
     <div>
@@ -75,6 +81,7 @@ else
             users = await userService.GetUsers();
             users = users.Where(u => u.UserType.Equals("tutor", StringComparison.OrdinalIgnoreCase));
 
+            Courses = await courseService.GetCourses(null);
             await FetchDescriptionsAsync();
         }
         catch (Exception e)
@@ -134,7 +141,7 @@ else
     {
         try
         {
-            Courses = await CourseService.GetCourses(course);
+            Courses = await courseService.GetCourses(course);
         }
         catch (Exception e)
         {
