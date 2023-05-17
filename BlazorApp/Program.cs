@@ -21,6 +21,7 @@ builder.Services.AddScoped(
         }
 );
 builder.Services.AddScoped<IUserService, UserHttpClient>();
+builder.Services.AddScoped<ICourseService, CourseHttpClient>();
 builder.Services.AddScoped<IAuthService, JwtAuthService>();
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthProvider>();
 AuthorizationPolicies.AddPolicies(builder.Services);

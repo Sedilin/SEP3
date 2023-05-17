@@ -1,4 +1,7 @@
+using System.Net.Http.Json;
 using System.Text.Json;
+using Domain.DTOs;
+using Domain.Model;
 using HttpClients.ClientInterfaces;
 
 namespace HttpClients.Implementations;
@@ -10,7 +13,7 @@ public class CourseHttpClient : ICourseService
     
     public async Task<IEnumerable<string>> GetCourses(string? course)
     {
-        string uri = "/course";
+        string uri = "/Course";
         if (!string.IsNullOrEmpty(course))
         {
             uri += $"?course={course}";
