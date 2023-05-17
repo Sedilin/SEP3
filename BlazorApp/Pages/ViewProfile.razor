@@ -34,7 +34,6 @@ else
 
     [Parameter]
     public string username { get; set;}
-
     private TutorInformationDto? tutor;
     private User users = new User();
 
@@ -52,6 +51,6 @@ else
     }
     private async Task MessageAsync(string userName)
     {
-        navMgr.NavigateTo($"/Messenger/{userName}");
+        navMgr.NavigateTo($"/MessagePlatform/{userName}");
     }
 }
