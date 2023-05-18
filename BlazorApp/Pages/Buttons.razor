@@ -13,6 +13,9 @@
 </AuthorizeView>
 
 @code {
+    
+    string username = "username";
+    
     private void Message()
     {
         navMgr.NavigateTo("/MessagePlatform");
@@ -20,6 +23,6 @@
 
     private void Account()
     {
-        navMgr.NavigateTo($"/Account");
+        navMgr.NavigateTo($"/Account/{username}");
     }
 }

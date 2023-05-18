@@ -1,9 +1,82 @@
-@page "/Account"
+@page "/Account/{username}"
+@using HttpClients.ClientInterfaces
+@using Domain.Model
+@using Domain.DTOs
+@inject ICourseService courseService
+@inject IUserService userService
 
-
-<h1> <span class="badge bg-secondary align-content-center">Account Information</span></h1>
+@if (Courses == null)
+{
+    <span>Loading..</span>
+}
+else
+{
+    
+    <div class="container">
+        <h1> <span class="badge bg-secondary align-content-center my-2">Account Information</span></h1>
+        <div class="row">
+            <div class="col-6 custom-column">
+                <div class="container">
+                    <img class="image" src="icons/user.png" alt="image">
+                    <div>
+                        <h1>@users.UserName</h1>
+                    </div>
+                    <form>
+                        <div class="form-group">
+                            <label for="textAreaInput">Profile Bio:</label>
+                            <textarea class="form-control" id="textAreaInput" rows="3"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="multiSelectDropdown">Course Selection:</label>
+                            <select @bind="course">
+                                @foreach (string course in Courses)
+                                {
+                                    <option value="@course">@course</option>
+                                }
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </form>
+                </div>
+            </div>
+            <div class="col-6 custom-column">
+            </div>
+        </div>
+    </div>
+   
+}
 
 
 @code {
+    private string course;
+    public IEnumerable<string>? Courses;
+    [Parameter]
+    public string username { get; set;}
+    private TutorInformationDto? tutor;
+    private User users = new User();
     
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            tutor = await userService.GetTutorAsync(username);
+            Courses = await courseService.GetCourses(null);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
+    }
+    
+    private async Task searchByCourse()
+    {
+        try
+        {
+            Courses = await courseService.GetCourses(course);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
+    }
 }
