@@ -49,7 +49,7 @@ public class UserLogic : IUserLogic
         IEnumerable<User> users = await GetAsync(parameters);
 
         User? existingUser = users.FirstOrDefault(u =>
-            u.UserName.Equals(username, StringComparison.OrdinalIgnoreCase));
+            u.UserName.Equals(username));
 
         if (existingUser == null)
         {
