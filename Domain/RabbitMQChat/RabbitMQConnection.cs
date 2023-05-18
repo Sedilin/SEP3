@@ -1,4 +1,6 @@
 using System.Text;
+using System.Text.Json;
+using Domain.DTOs;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
@@ -13,16 +15,18 @@ public class RabbitMQConnection
         return factory.CreateConnection();
     }
 
-    public bool send(IConnection con, string message, string friendqueue)
+    public bool send(IConnection con, MessageDto dto)
     {
         try
         {
             IModel channel = con.CreateModel();
             channel.ExchangeDeclare("messageexchange", ExchangeType.Direct);
-            channel.QueueDeclare(friendqueue, true, false, false, null);
-            channel.QueueBind(friendqueue, "messageexchange", friendqueue, null);
-            var msg = Encoding.UTF8.GetBytes(message);
-            channel.BasicPublish("messageexchange", friendqueue, null, msg);
+            channel.QueueDeclare(dto.Receiver.UserName, true, false, false, null);
+            channel.QueueBind(dto.Receiver.UserName, "messageexchange", dto.Receiver.UserName, null);
+            var serialized = JsonSerializer.Serialize(dto);
+            var msg = Encoding.UTF8.GetBytes(serialized);
+            channel.BasicPublish("messageexchange", dto.Receiver.UserName, null, msg);
+            channel.Close();
         }
         catch (Exception)
         {
@@ -31,7 +35,7 @@ public class RabbitMQConnection
         return true;
     }
 
-    public string receive(IConnection con, string myqueue)
+    public MessageDto receive(IConnection con, string myqueue)
     {
         try
         {
@@ -41,8 +45,11 @@ public class RabbitMQConnection
             BasicGetResult result = channel.BasicGet(queue: queue, autoAck: true);
             if (result != null)
             {
-                return Encoding.UTF8.GetString(result.Body.ToArray());
+                var message = Encoding.UTF8.GetString(result.Body.ToArray());
+                channel.Close(); 
+                return JsonSerializer.Deserialize<MessageDto>(message);
             }
+            channel.Close();
             return null;
         }
         catch (Exception)

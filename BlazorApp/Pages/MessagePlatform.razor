@@ -3,6 +3,7 @@
 @using Domain.Model
 @using System.Threading.Tasks
 @using System.Timers
+@using Domain.DTOs
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject IUserService userService;
 @inject IMessageService messageService;
@@ -32,7 +33,7 @@ else
             <div class="list-group">
                 @foreach (User user in users)
                 {
-                    <button class="btn btn-outline-primary" @onclick="Toggle">@user.UserName</button>
+                    <button class="btn btn-outline-primary" @onclick="() => Toggle(user)">@user.UserName</button>
                 }
             </div>
         </div>
@@ -41,8 +42,14 @@ else
             <div hidden="@(showPanel1)">
                 <div class="card" style="width:600px">
                     <div class="card-body">
-                        <p class="card-text"></p>
-                        <a href="#" class="btn btn-primary">Send Message</a>
+                        <div class="list-group" style="height: 200px; overflow-y: auto;">
+                            @foreach (String message in messages)
+                            {
+                                <ul> @message</ul>
+                            }
+                            </div>
+                        <button class="btn btn-outline-danger">Close</button>
+                        <button class="btn btn-outline-danger" @onclick="() => send(receiver)">Send Message</button>
                         <div>
                             <label for="comment">Write Message:</label>
                             <textarea class="form-control" rows="5" id="comment" name="text"@bind="msg">@msg</textarea>
@@ -57,16 +64,33 @@ else
 @code {
     bool showPanel1 = true;
 
-    void Toggle()
+    List<String> messages = new();
+    
+    void Toggle(User receiver)
     {
         showPanel1 = !showPanel1;
+        this.receiver = receiver;
+        
+        if (!showPanel1)
+        {
+            timer = new Timer(1000); // Refresh every 1 second
+            timer.Elapsed += async (sender, e) => await loop();
+            timer.AutoReset = true;
+            timer.Start();
+        }
+        else
+        {
+            timer.Stop();
+        }
     }
     
     private IEnumerable<User>? users;
-    string username = "username";
     private string msg;
     private int i = 0;
     private Timer timer;
+
+    User sender;
+    User receiver;
 
     protected override async Task OnInitializedAsync()
     {
@@ -74,14 +98,11 @@ else
         {
             msg = "Lol";
             var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-            username = authState.User.Identity.Name;
+            IEnumerable<User> test = await userService.GetUsers();
+            sender = test.First(u => u.UserName.Equals(authState.User.Identity.Name));
+            
             users = await userService.GetUsers();
             users = users.Where(u => u.UserType.Equals("tutor", StringComparison.OrdinalIgnoreCase));
-            
-            timer = new Timer(5000); // Refresh every 5 second
-            timer.Elapsed += async (sender, e) => await loop();
-            timer.AutoReset = true;
-            timer.Start();
         }
         catch (Exception e)
         {
@@ -90,11 +111,21 @@ else
         }
     }
 
-    private async Task loop()
+    public async Task loop()
+    {
+        MessageDto message = await messageService.Receive(sender.UserName);
+        if (message != null)
+        {
+            messages.Add(message.Message);
+        }
+        StateHasChanged();
+    }
+
+    private async Task send(User receiver)
     {
         i++;
-        await messageService.Send("test" + i);
-        msg = await messageService.Receive(username);
+        MessageDto dto = new MessageDto(sender, receiver, msg);
+        await messageService.Send(dto);
         StateHasChanged();
     }
 }

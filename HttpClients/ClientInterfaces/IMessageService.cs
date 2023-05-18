@@ -1,7 +1,9 @@
+using Domain.DTOs;
+
 namespace HttpClients.ClientInterfaces;
 
 public interface IMessageService
 {
-    Task<string> Receive(string username);
-    Task<string> Send(string message);
+    Task<MessageDto> Receive(string username);
+    Task<MessageDto> Send(MessageDto message);
 }

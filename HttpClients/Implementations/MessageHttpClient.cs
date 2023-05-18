@@ -1,4 +1,7 @@
+using System.Net;
+using System.Net.Http.Json;
 using System.Text.Json;
+using Domain.DTOs;
 using HttpClients.ClientInterfaces;
 
 namespace HttpClients.Implementations;
@@ -12,7 +15,7 @@ public class MessageHttpClient : IMessageService
         this.client = client;
     }
     
-    public async Task<string> Receive(string userName)
+    public async Task<MessageDto> Receive(string userName)
     {
         string uri = $"/Message/receive?userName={userName}";
         HttpResponseMessage response = await client.GetAsync(uri);
@@ -21,18 +24,31 @@ public class MessageHttpClient : IMessageService
         {
             throw new Exception(result);
         }
-        return result;
+
+        if (!String.IsNullOrEmpty(result))
+        {
+            MessageDto message = JsonSerializer.Deserialize<MessageDto>(result, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            })!;
+            return message;
+        }
+
+        return null;
     }
 
-    public async Task<string> Send(string message)
+    public async Task<MessageDto> Send(MessageDto message)
     {
-        string uri = $"/Message/send?message={message}";
-        HttpResponseMessage response = await client.GetAsync(uri);
+        HttpResponseMessage response = await client.PostAsJsonAsync("/Message/send", message);
         string result = await response.Content.ReadAsStringAsync();
         if (!response.IsSuccessStatusCode)
         {
             throw new Exception(result);
         }
-        return result;
+        MessageDto messageResult = JsonSerializer.Deserialize<MessageDto>(result, new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        })!;
+        return messageResult;
     }
 }
