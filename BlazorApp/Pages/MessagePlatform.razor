@@ -43,9 +43,9 @@ else
                 <div class="card" style="width:600px">
                     <div class="card-body">
                         <div class="list-group" style="height: 200px; overflow-y: auto;">
-                            @foreach (String message in messages)
+                            @foreach (MessageDto message in messages)
                             {
-                                <ul> @message</ul>
+                                <ul> @message.Sender.UserName : @message.Message</ul>
                             }
                             </div>
                         <button class="btn btn-outline-danger">Close</button>
@@ -64,7 +64,7 @@ else
 @code {
     bool showPanel1 = true;
 
-    List<String> messages = new();
+    List<MessageDto> messages = new();
     
     void Toggle(User receiver)
     {
@@ -116,7 +116,7 @@ else
         MessageDto message = await messageService.Receive(sender.UserName);
         if (message != null)
         {
-            messages.Add(message.Message);
+            messages.Add(message);
         }
         StateHasChanged();
     }
@@ -125,7 +125,8 @@ else
     {
         i++;
         MessageDto dto = new MessageDto(sender, receiver, msg);
-        await messageService.Send(dto);
+        MessageDto sent = await messageService.Send(dto);
+        messages.Add(sent);
         StateHasChanged();
     }
 }
