@@ -1,0 +1,25 @@
+@using BlazorApp.Services
+@using HttpClients.ClientInterfaces
+@inject NavigationManager navMgr
+@inject IAuthService authService
+@inject IUserService userService
+@namespace Buttons
+
+<AuthorizeView>
+    <Authorized>
+        <button class="btn btn-outline-primary mx-2" @onclick="Message"> Message </button>
+        <button class="btn btn-outline-secondary mx-2 my-2" @onclick="Account"> Account </button>
+    </Authorized>
+</AuthorizeView>
+
+@code {
+    private void Message()
+    {
+        navMgr.NavigateTo("/MessagePlatform");
+    }
+
+    private void Account()
+    {
+        navMgr.NavigateTo($"/Account");
+    }
+}
