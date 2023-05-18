@@ -45,7 +45,14 @@ else
                         <div class="list-group" style="height: 200px; overflow-y: auto;">
                             @foreach (MessageDto message in messages)
                             {
-                                <ul> @message.Sender.UserName : @message.Message</ul>
+                                @if (message.Sender.UserName.Equals(sender.UserName))
+                                {
+                                    <ul class="message-right"> @message.Sender.UserName : @message.Message</ul>
+                                }
+                                else
+                                {
+                                    <ul class="message-left"> @message.Sender.UserName : @message.Message</ul>
+                                }
                             }
                             </div>
                         <button class="btn btn-outline-danger">Close</button>
