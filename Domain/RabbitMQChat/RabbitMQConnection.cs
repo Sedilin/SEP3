@@ -6,13 +6,39 @@ using RabbitMQ.Client.Events;
 
 namespace Domain.RabbitMQChat;
 
-public class RabbitMQConnection
+public sealed class RabbitMQConnection
 {
+    private static RabbitMQConnection instance = null;
+    private static readonly object padlock = new object();
+
+    private static IConnection connection;
+    
+    private RabbitMQConnection()
+    {
+    }
+
+    public static RabbitMQConnection Instance
+    {
+        get
+        {
+            lock (padlock)
+            {
+                if (instance == null)
+                {
+                    instance = new RabbitMQConnection();
+                    ConnectionFactory factory = new ConnectionFactory();
+                    factory.HostName = "localhost";
+                    connection = factory.CreateConnection();
+                }
+            }
+
+            return instance;
+        }
+    }
+    
     public IConnection GetConnection()
     {
-        ConnectionFactory factory = new ConnectionFactory();
-        factory.HostName = "localhost";
-        return factory.CreateConnection();
+        return connection;
     }
 
     public bool send(IConnection con, MessageDto dto)

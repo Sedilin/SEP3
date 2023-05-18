@@ -14,9 +14,8 @@ public class MessageController : ControllerBase
     {
         try
         {
-            RabbitMQConnection obj = new RabbitMQConnection();
-            IConnection con = obj.GetConnection();
-            bool flag = obj.send(con, message);
+            IConnection con = RabbitMQConnection.Instance.GetConnection();
+            bool flag = RabbitMQConnection.Instance.send(con, message);
             return Ok(message);
         }
         catch (Exception e)
@@ -31,10 +30,9 @@ public class MessageController : ControllerBase
     {
         try
         {
-            RabbitMQConnection obj = new RabbitMQConnection();
-            IConnection con = obj.GetConnection();
+            IConnection con = RabbitMQConnection.Instance.GetConnection();
             string userqueue = userName;
-            MessageDto message = obj.receive(con, userqueue);
+            MessageDto message = RabbitMQConnection.Instance.receive(con, userqueue);
             return Ok(message);
         }
         catch (Exception e)
