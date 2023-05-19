@@ -1,3 +1,4 @@
+@page "/MessagePlatform/{userName}"
 @page "/MessagePlatform"
 @using HttpClients.ClientInterfaces
 @using Domain.Model
@@ -11,16 +12,6 @@
 
 
 <h1> <span class="badge bg-secondary align-content-center">Message Platform</span></h1>
-
-<span class="message-right">This is an exaple</span>
-
-@if (!string.IsNullOrEmpty(msg))
-{
-    <div>
-        <span>@msg</span>
-    </div>
-}
-
 @if (users == null)
 {
     <span>Loading..</span>
@@ -34,80 +25,91 @@ else
     <div class="row">
         <div class="col-sm-4">
             <form class="d-flex">
-                <input class="form-control me-2 mb-5" type="text" @bind="searchByUsername" placeholder="Search for Tutors">
-                <button class="btn btn-primary mb-5" type="button" @onclick="searchTutorByUsername" disabled="@(string.IsNullOrEmpty(searchByUsername))">Search</button>
+                <input class="form-control me-2 mb-5" type="text" @bind="userName" placeholder="Search for Tutors">
+                <button class="btn btn-primary mb-5" type="button" @onclick="SearchTutorByUsername">Search</button>
             </form>
             
             <div class="list-group">
                 @foreach (User user in users)
                 {
-                    <button class="btn btn-outline-primary" @onclick="() => Toggle(user)">@user.UserName</button>
+                    if (!user.UserName.Equals(sender.UserName))
+                    {
+                        <button class="btn btn-outline-primary" @onclick="() => OpenChat(user)">@user.UserName</button>
+                    }
                 }
             </div>
         </div>
-        <div class="col-sm-8">
-            <div hidden="@showPanel1"></div>
-            <div hidden="@(showPanel1)">
-                <div class="card" style="width:600px">
-                    <div class="card-body">
-                        <div class="list-group" style="height: 200px; overflow-y: auto;">
+    <div class="col-sm-8">
+        <div hidden="@chat">
+            <div class="card" style="width:600px">
+                <button class="btn btn-outline-danger" style="margin-left: 500px" @onclick="@CloseChat">Close</button>
+                <div class="card-body">
+                    <div class="list-group" style="height: 400px; overflow-y: auto;">
+                        @if (messages.Count == 0)
+                        {
+                            <h3> <span class="badge bg-danger align-content-center">No conversation available</span></h3>
+                        }
+                        else
+                        {
                             @foreach (MessageDto message in messages)
                             {
                                 @if (message.Sender.UserName.Equals(sender.UserName))
                                 {
                                     <ul class="message-right"> @message.Sender.UserName : @message.Message</ul>
-                                    <span class="message-right">@message.Sender.UserName : @message.Message</span>
                                 }
                                 else
                                 {
                                     <ul class="message-left"> @message.Sender.UserName : @message.Message</ul>
-                                    <span class="message-left">@message.Sender.UserName : @message.Message</span>
                                 }
                             }
-                            </div>
-                        <button class="btn btn-outline-danger">Close</button>
-                        <button class="btn btn-outline-danger" @onclick="() => send(receiver)">Send Message</button>
-                        <div>
-                            <label for="comment">Write Message:</label>
-                            <textarea class="form-control" rows="5" id="comment" name="text"@bind="msg">@msg</textarea>
-                        </div>
+                        }
+
+                    </div>
+                    <button class="btn btn-outline-primary" disabled="@(string.IsNullOrWhiteSpace(msg))" @onclick="() => SendMessage(receiver)">Send Message</button>
+                    <div>
+                        <label for="comment">Write Message:</label>
+                        <textarea class="form-control" rows="2" id="comment" name="text"@bind="msg">@msg</textarea>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
-}
+    </div>
 @code {
-    bool showPanel1 = true;
-
-    List<MessageDto> messages = new();
+    bool chat = true;
     
-    void Toggle(User receiver)
+    [Parameter]
+    public string userName { get; set;}
+    
+    List<MessageDto> messages;
+    
+    void OpenChat(User receiver)
     {
-        showPanel1 = !showPanel1;
+        if (chat)
+        {
+            chat = false;
+        }
         this.receiver = receiver;
+        messages = new();
         
-        if (!showPanel1)
-        {
-            timer = new Timer(1000); // Refresh every 1 second
-            timer.Elapsed += async (sender, e) => await loop();
-            timer.AutoReset = true;
-            timer.Start();
-        }
-        else
-        {
-            timer.Stop();
-        }
+        timer = new Timer(1000); // Refresh every 1 second
+        timer.Elapsed += async (sender, e) => await ReceiveMessages();
+        timer.AutoReset = true;
+        timer.Start();
     }
-    
+
+    void CloseChat()
+    {
+        chat = true;
+        timer.Stop();
+    }
+
     private IEnumerable<User>? users;
-    private string msg = "lol";
+    private IEnumerable<User>? searchedUsers;
+    private IEnumerable<User>? tutors;
+    private string msg = "";
     private int i = 0;
     private Timer timer;
-    
-    string username = "username";
-    public string searchByUsername = "";
 
     User sender;
     User receiver;
@@ -117,12 +119,14 @@ else
         try
         {
             msg = "";
+            messages = new();
             var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
             IEnumerable<User> test = await userService.GetUsers();
             sender = test.First(u => u.UserName.Equals(authState.User.Identity.Name));
             
-            users = await userService.GetUsers();
-            users = users.Where(u => u.UserType.Equals("tutor", StringComparison.OrdinalIgnoreCase));
+            tutors = await userService.GetUsers();
+            tutors = tutors.Where(u => u.UserType.Equals("tutor", StringComparison.OrdinalIgnoreCase));
+            users = tutors;
         }
         catch (Exception e)
         {
@@ -130,41 +134,44 @@ else
             msg = e.Message;
         }
     }
+    
+    
 
-    public async Task loop()
+    public async Task ReceiveMessages()
     {
         MessageDto message = await messageService.Receive(sender.UserName);
         if (message != null)
         {
-            messages.Add(message);
+            if ((message.Sender.UserName.Equals(receiver.UserName)  || message.Receiver.UserName.Equals(receiver.UserName)) && (message.Receiver.UserName.Equals(sender.UserName) || message.Sender.UserName.Equals(sender.UserName)))
+            {
+                messages.Add(message);
+            }
         }
         StateHasChanged();
     }
 
-    private async Task send(User receiver)
+    private async Task SendMessage(User receiver)
     {
-        i++;
         MessageDto dto = new MessageDto(sender, receiver, msg);
         MessageDto sent = await messageService.Send(dto);
         messages.Add(sent);
+        msg = "";
         StateHasChanged();
     }
-    private async Task searchTutorByUsername()
+    private async Task SearchTutorByUsername()
     {
         try
         {
-            users = new[] { await userService.SearchTutorByUsername(searchByUsername) };
+            searchedUsers = new[] { await userService.SearchTutorByUsername(userName) };
+            users = searchedUsers;
         }
         catch (Exception e)
         {
+            users = tutors;
             Console.WriteLine(e);
             msg = e.Message;
         }
         
     }
-    
-    private async Task<TutorInformationDto> GetTutorAsync(string UserName)
-    {
-        return await userService.GetTutorAsync(UserName);
-    }
+}
 }

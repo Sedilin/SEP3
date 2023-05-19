@@ -31,4 +31,19 @@ public class CourseController : ControllerBase
         }
     }
 
+    [HttpGet("tutorByCourse")]
+    public async Task<ActionResult<IEnumerable<UserToTutorDto>>> GetTutorByCourse(string course)
+    {
+        try
+        {
+            IEnumerable<UserToTutorDto> users = await courseLogic.GetTutorByCourse(course);
+            return Ok(users);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return StatusCode(500, e.Message);
+        }
+    }
+
 }

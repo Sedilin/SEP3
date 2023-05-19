@@ -16,7 +16,7 @@
 else
 {
     <div class="container-fluid mt-2 d-inline-flex">
-        <select @bind="course">
+        <select @oninput="HandleChange">
             @foreach (string course in Courses)
                 {
                     <option value="@course">@course</option>
@@ -24,7 +24,7 @@ else
         </select>
         <form class="d-flex">
             <input class="form-control me-2" type="text" @bind="searchByUsername" placeholder="Search">
-            <button class="btn btn-primary" type="button" @onclick="searchTutorByUsername" disabled="@(string.IsNullOrEmpty(searchByUsername))">Search</button>
+            <button class="btn btn-primary" type="button" @onclick="searchTutorByUsername">Search</button>
         </form>
     </div>
 }
@@ -39,10 +39,6 @@ else
 {
     <span>Loading..</span>
 }
-else if (!users.Any())
-{
-    <span>No tutors to be found</span>
-}
 else
 {
     <div class="users-container">
@@ -54,7 +50,7 @@ else
                   <h4 class="card-title">@user.UserName</h4>
                   <p class="card-text">@TruncateDescription(descriptions[user.UserName])</p>
               </div>
-              <button class="viewProfilebtn" @onclick="(() => ViewProfileAsync(user.UserName))">View Profile</button>
+              <button class="btn btn-outline-success" @onclick="(() => ViewProfileAsync(user.UserName))">View Profile</button>
             </div>
         }
     </div>
@@ -64,6 +60,7 @@ else
 
     string username = "username";
     private IEnumerable<User>? users;
+    private IEnumerable<User>? tutors;
     private string msg = "";
     private string course;
     public string searchByUsername = "";
@@ -75,9 +72,10 @@ else
         msg = "";
         try
         {
-            users = await userService.GetUsers();
-            users = users.Where(u => u.UserType.Equals("tutor", StringComparison.OrdinalIgnoreCase));
-
+            tutors = await userService.GetUsers();
+            tutors = tutors.Where(u => u.UserType.Equals("tutor", StringComparison.OrdinalIgnoreCase));
+            users = tutors;
+            
             Courses = await courseService.GetCourses(null);
             await FetchDescriptionsAsync();
         }
@@ -125,25 +123,43 @@ else
         try
         {
             users = new[] { await userService.SearchTutorByUsername(searchByUsername) };
+            msg = "";
         }
         catch (Exception e)
         {
+            users = tutors;
+            msg = "User not found";
             Console.WriteLine(e);
-            msg = e.Message;
         }
         
     }
 
-    private async Task searchByCourse()
+    private void HandleChange(ChangeEventArgs e)
+    {
+        course = e.Value.ToString();
+        searchByCourse(course);
+    }
+
+    private async Task searchByCourse(string course)
     {
         try
         {
-            Courses = await courseService.GetCourses(course);
+            IEnumerable<UserToTutorDto> dto = await courseService.GetTutorByCourse(course);
+            List<User> found = new List<User>();
+            foreach (var user in dto)
+            {
+                found.Add(user.User);
+            }
+            users = found;
+            StateHasChanged();
         }
         catch (Exception e)
         {
+            users = new List<User>();
             Console.WriteLine(e);
-            msg = e.Message;
+            msg = "No tutors found for this course";
+            StateHasChanged();
+            
         }
     }
     

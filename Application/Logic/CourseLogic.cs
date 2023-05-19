@@ -18,4 +18,9 @@ public class CourseLogic : ICourseLogic
     {
         return await courseDao.GetAsync(parameter);
     }
+
+    public async Task<IEnumerable<UserToTutorDto>> GetTutorByCourse(string course)
+    {
+        return await courseDao.GetTutorByCourse(course);
+    }
 }
