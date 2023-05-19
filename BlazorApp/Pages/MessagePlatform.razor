@@ -11,6 +11,9 @@
 
 
 <h1> <span class="badge bg-secondary align-content-center">Message Platform</span></h1>
+
+<span class="message-right">This is an exaple</span>
+
 @if (!string.IsNullOrEmpty(msg))
 {
     <div>
@@ -30,6 +33,11 @@ else
 {
     <div class="row">
         <div class="col-sm-4">
+            <form class="d-flex">
+                <input class="form-control me-2 mb-5" type="text" @bind="searchByUsername" placeholder="Search for Tutors">
+                <button class="btn btn-primary mb-5" type="button" @onclick="searchTutorByUsername" disabled="@(string.IsNullOrEmpty(searchByUsername))">Search</button>
+            </form>
+            
             <div class="list-group">
                 @foreach (User user in users)
                 {
@@ -48,10 +56,12 @@ else
                                 @if (message.Sender.UserName.Equals(sender.UserName))
                                 {
                                     <ul class="message-right"> @message.Sender.UserName : @message.Message</ul>
+                                    <span class="message-right">@message.Sender.UserName : @message.Message</span>
                                 }
                                 else
                                 {
                                     <ul class="message-left"> @message.Sender.UserName : @message.Message</ul>
+                                    <span class="message-left">@message.Sender.UserName : @message.Message</span>
                                 }
                             }
                             </div>
@@ -92,9 +102,12 @@ else
     }
     
     private IEnumerable<User>? users;
-    private string msg;
+    private string msg = "lol";
     private int i = 0;
     private Timer timer;
+    
+    string username = "username";
+    public string searchByUsername = "";
 
     User sender;
     User receiver;
@@ -103,7 +116,7 @@ else
     {
         try
         {
-            msg = "Lol";
+            msg = "";
             var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
             IEnumerable<User> test = await userService.GetUsers();
             sender = test.First(u => u.UserName.Equals(authState.User.Identity.Name));
@@ -135,5 +148,23 @@ else
         MessageDto sent = await messageService.Send(dto);
         messages.Add(sent);
         StateHasChanged();
+    }
+    private async Task searchTutorByUsername()
+    {
+        try
+        {
+            users = new[] { await userService.SearchTutorByUsername(searchByUsername) };
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            msg = e.Message;
+        }
+        
+    }
+    
+    private async Task<TutorInformationDto> GetTutorAsync(string UserName)
+    {
+        return await userService.GetTutorAsync(UserName);
     }
 }

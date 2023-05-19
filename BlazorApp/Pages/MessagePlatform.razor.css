@@ -1,6 +1,16 @@
 .message-right{
     text-align: right;
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 20px;
+    background-color: #259af8; /* Green color */
+    color: #FFFFFF; /* White font color */
 }
 .message-left{
     text-align: left;
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 20px;
+    background-color: #9ea1a8; /* Green color */
+    color: #FFFFFF; /* White font color */
 }
