@@ -34,4 +34,22 @@ public class CourseDatabaseDao : ICourseDao
         })!;
         return courses;
     }
+
+    public async Task<IEnumerable<UserToTutorDto>> GetTutorByCourse(string course)
+    {
+        string uri = $"/course/tutorByCourse?name={course}";
+        HttpResponseMessage response = await client.GetAsync(uri);
+        string result = await response.Content.ReadAsStringAsync();
+
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new Exception(result);
+        }
+        
+        IEnumerable<UserToTutorDto> users = JsonSerializer.Deserialize<IEnumerable<UserToTutorDto>>(result, new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        })!;
+        return users;
+    }
 }

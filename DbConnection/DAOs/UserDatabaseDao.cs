@@ -114,7 +114,7 @@ public class UserDatabaseDao : IUserDao
 
         if (!response.IsSuccessStatusCode)
         {
-            return null;
+            throw new Exception(result);
         }
         
         User? user = JsonSerializer.Deserialize<User>(result, new JsonSerializerOptions
