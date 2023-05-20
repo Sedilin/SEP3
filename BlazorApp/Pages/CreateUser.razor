@@ -4,27 +4,34 @@
 @inject IUserService userService;
 
 <h1> <span class="badge bg-secondary align-content-center">Create a Profile</span></h1>
-<div class="card" style="width:400px">
-  <img class="card-img-top" src="icons/log-in.png" alt="Card image">
-  <div class="card-body">
-      <div class="row-cols-auto content  clearfix align-content-center">
-              <label>Username:</label>
-              <input type="text" @bind="userName" @bind:event="oninput"/>
-            
-          </div>
-          <div class="row-cols-auto content clearfix align-content-center">
-              <label> Password:</label>
-              <input type="text" @bind="password" @bind:event="oninput"/>
-          </div>
-          <div class="button-row">
-              <button @onclick="Create" disabled="@(string.IsNullOrEmpty(userName) || (string.IsNullOrEmpty(password)))" class="acceptbtn">Create</button>
-          </div>
-  </div> 
-  @if (!string.IsNullOrEmpty(resultMsg))
-  {
-      <label style="color: @color">@resultMsg</label>
-  }
-  </div>
+<div class="row">
+    <div class="col-4"></div>
+    <div class="col-4">
+        <div class="card" style="width:400px">
+            <img class="card-img-top" src="icons/minion.gif" alt="Card image">
+            <div class="card-body">
+                <div class="row-cols-auto content  clearfix align-content-center">
+                    <label>Username:</label>
+                    <input type="text" @bind="userName" @bind:event="oninput"/>
+
+                </div>
+                <div class="row-cols-auto content clearfix align-content-center">
+                    <label> Password:</label>
+                    <input type="text" @bind="password" @bind:event="oninput"/>
+                </div>
+                <div class="button-row">
+                    <button @onclick="Create" disabled="@(string.IsNullOrEmpty(userName) || (string.IsNullOrEmpty(password)))" class="acceptbtn">Create</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-4"></div>
+    @if (!string.IsNullOrEmpty(resultMsg))
+    {
+        <label style="color: @color">@resultMsg</label>
+    }
+</div>
+
 
 
 @code {

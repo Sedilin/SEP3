@@ -1,45 +1,82 @@
-@page "/Account/{username}"
+@page "/Account"
 @using HttpClients.ClientInterfaces
 @using Domain.Model
 @using Domain.DTOs
 @inject ICourseService courseService
 @inject IUserService userService
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
-@if (Courses == null)
+@if (tutor == null)
 {
     <span>Loading..</span>
 }
 else
 {
-    
     <div class="container">
         <h1> <span class="badge bg-secondary align-content-center my-2">Account Information</span></h1>
         <div class="row">
             <div class="col-6 custom-column">
                 <div class="container">
-                    <img class="image" src="icons/user.png" alt="image">
                     <div>
-                        <h1>@users.UserName</h1>
+                        <h1>@tutor.User.UserName</h1>
                     </div>
                     <form>
                         <div class="form-group">
                             <label for="textAreaInput">Profile Bio:</label>
-                            <textarea class="form-control" id="textAreaInput" rows="3"></textarea>
+                            <textarea class="form-control" id="textAreaInput" rows="3" @bind="tutor.Description"></textarea>
                         </div>
-                        <div class="form-group">
-                            <label for="multiSelectDropdown">Course Selection:</label>
-                            <select @bind="course">
-                                @foreach (string course in Courses)
-                                {
-                                    <option value="@course">@course</option>
-                                }
-                            </select>
+                        <div class="row">
+                            <div class="col-6 custom-column">
+                                <table class="table">
+                                    <thead>
+                                    <tr>
+                                        <th>Course Name</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    @foreach (var item in tutor.Courses)
+                                    {
+                                        <tr>
+                                            <td>@item</td>
+                                        </tr>
+                                    }
+                                    <tr>
+                                        <td>
+                                            <img src="icons/edit.gif" class="edit" @onclick="ToggleCourseTable"/>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col-6 custom-column">
+                            </div>
                         </div>
-                        <button type="submit" class="btn btn-primary">Save</button>
+                        <button type="submit" class="btn btn-primary" @onclick="UpdateTutor">Save</button>
                     </form>
                 </div>
             </div>
             <div class="col-6 custom-column">
+                <div class="container" hidden="@courseTable">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>Course Name</th>
+                            <th>Add</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach (var item in Courses)
+                        {
+                            <tr>
+                                <td>@item</td>
+                                <td>
+                                    <input type="checkbox" checked="@tutor.Courses.Contains(item)" @onchange="e => SelectedTutorCourse(item, e.Value.ToString())">
+                                </td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
@@ -48,17 +85,28 @@ else
 
 
 @code {
-    private string course;
     public IEnumerable<string>? Courses;
-    [Parameter]
-    public string username { get; set;}
+    public string username;
     private TutorInformationDto? tutor;
-    private User users = new User();
-    
+    private bool courseTable = true;
+
+    private void ToggleCourseTable()
+    {
+        if (courseTable)
+        {
+            courseTable = false;
+        }
+        else
+        {
+            courseTable = true;
+        }
+    }
     protected override async Task OnInitializedAsync()
     {
         try
         {
+            var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+            username = authState.User.Identity.Name;
             tutor = await userService.GetTutorAsync(username);
             Courses = await courseService.GetCourses(null);
         }
@@ -67,16 +115,21 @@ else
             Console.WriteLine(e);
         }
     }
-    
-    private async Task searchByCourse()
+
+    private void SelectedTutorCourse(string course, string isChecked)
     {
-        try
+        if (isChecked.ToLower().Equals("true"))
         {
-            Courses = await courseService.GetCourses(course);
+            tutor.Courses.Add(course);
         }
-        catch (Exception e)
+        else
         {
-            Console.WriteLine(e);
+            tutor.Courses.Remove(course);
         }
+    }
+
+    private async Task UpdateTutor()
+    {
+       // await userService.UpdateTutor(tutor);
     }
 }
