@@ -8,14 +8,12 @@
 <AuthorizeView>
     <Authorized>
         <button class="btn btn-outline-primary mx-2" @onclick="Message"> Message </button>
-        <button class="btn btn-outline-secondary mx-2 my-2" @onclick="Account"> Account </button>
+        <img class="image mx-2 my-2" src="icons/user.png" alt="image" style="width: 30px; height: 30px;" @onclick="Account">
     </Authorized>
 </AuthorizeView>
 
 @code {
-    
-    string username = "username";
-    
+
     private void Message()
     {
         navMgr.NavigateTo("/MessagePlatform");
@@ -23,6 +21,6 @@
 
     private void Account()
     {
-        navMgr.NavigateTo($"/Account/{username}");
+        navMgr.NavigateTo($"/Account");
     }
 }

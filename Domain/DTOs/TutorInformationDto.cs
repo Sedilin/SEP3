@@ -6,7 +6,7 @@ public class TutorInformationDto
 {
     public User User { get; }
     public List<string> Courses { get; set; }
-    public string Description { get; }
+    public string Description { get; set; }
 
 
     public TutorInformationDto(User user, string description)
