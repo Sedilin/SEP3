@@ -5,6 +5,8 @@
 @inject ICourseService courseService
 @inject IUserService userService
 @inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager navMgr
+@attribute [Authorize]
 
 @if (tutor == null)
 {
@@ -130,6 +132,7 @@ else
 
     private async Task UpdateTutor()
     {
-       // await userService.UpdateTutor(tutor);
+        navMgr.NavigateTo("/");
+       await userService.UpdateProfile(tutor);
     }
 }

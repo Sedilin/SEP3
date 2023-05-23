@@ -94,4 +94,19 @@ public class UserController : ControllerBase
             return StatusCode(500, e.Message);
         }
     }
+
+    [HttpPut("profile")]
+    public async Task<ActionResult<User>> UpdateProfile(TutorInformationDto dto)
+    {
+        try
+        {
+            User user = await userLogic.UpdateUser(dto);
+            return Ok(user);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return StatusCode(500, e.Message);
+        }
+    }
 }

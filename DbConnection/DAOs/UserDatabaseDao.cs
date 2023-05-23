@@ -123,4 +123,21 @@ public class UserDatabaseDao : IUserDao
         })!;
         return user;
     }
+
+    public async Task<User> UpdateProfile(TutorInformationDto dto)
+    {
+        string uri = "/user/profile";
+        HttpResponseMessage response = await client.PutAsJsonAsync(uri, dto);
+        string result = await response.Content.ReadAsStringAsync();
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new Exception(result);
+        }
+        
+        User user = JsonSerializer.Deserialize<User>(result, new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        })!;
+        return user;
+    }
 }

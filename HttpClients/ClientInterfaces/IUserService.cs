@@ -11,5 +11,6 @@ public interface IUserService
     Task<User> BecomeTutor(UserToTutorDto dto);
     Task<TutorInformationDto> GetTutorAsync(string userName);
     Task<User> SearchTutorByUsername(string userName);
+    Task<User> UpdateProfile(TutorInformationDto dto);
 
 }

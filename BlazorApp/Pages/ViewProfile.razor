@@ -4,6 +4,7 @@
 @using Domain.DTOs
 @inject IUserService userService
 @inject NavigationManager navMgr
+@attribute [Authorize]
 
 @if (tutor == null)
 {
