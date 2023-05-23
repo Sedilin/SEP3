@@ -12,4 +12,5 @@ public interface IUserDao
     Task<User> PostNewTutorAsync(UserToTutorDto dto);
     Task<TutorInformationDto> GetTutorAsync(SearchUserParametersDto parameters);
     Task<User?> GetTutorByUsername(SearchUserParametersDto dto);
+    Task<User> UpdateProfile(TutorInformationDto dto);
 }

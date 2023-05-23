@@ -90,6 +90,12 @@ public class UserLogic : IUserLogic
         return user;
     }
 
+    public async Task<User> UpdateUser(TutorInformationDto dto)
+    {
+        User user = await userDao.UpdateProfile(dto);
+        return user;
+    }
+
     private static void ValidateData(UserCreationDto userToCreate)
     {
         string userName = userToCreate.UserName;
