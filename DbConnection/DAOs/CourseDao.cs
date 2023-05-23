@@ -4,11 +4,11 @@ using Domain.DTOs;
 
 namespace DbConnection.DAOs;
 
-public class CourseDatabaseDao : ICourseDao
+public class CourseDao : ICourseDao
 {
     private readonly HttpClient client;
     
-    public CourseDatabaseDao(HttpClient client)
+    public CourseDao(HttpClient client)
     {
         this.client = client;
     }

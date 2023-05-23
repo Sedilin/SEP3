@@ -6,11 +6,11 @@ using Domain.Model;
 
 namespace DbConnection.DAOs;
 
-public class UserDatabaseDao : IUserDao
+public class UserDao : IUserDao
 {
     private readonly HttpClient client;
 
-    public UserDatabaseDao(HttpClient client)
+    public UserDao(HttpClient client)
     {
         this.client = client;
     }

@@ -2,7 +2,6 @@ using System.Text;
 using Application.DaoInterfaces;
 using Application.Logic;
 using Application.LogicInterfaces;
-using DbConnection;
 using DbConnection.DAOs;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -16,10 +15,13 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddScoped<IUserDao, UserDatabaseDao>();
+builder.Services.AddScoped<IUserDao, UserDao>();
 builder.Services.AddScoped<IUserLogic, UserLogic>();
 builder.Services.AddScoped<ICourseLogic, CourseLogic>();
-builder.Services.AddScoped<ICourseDao, CourseDatabaseDao>();
+builder.Services.AddScoped<ICourseDao, CourseDao>();
+
+builder.Services.AddScoped<IMessageLogic, MessageLogic>();
+builder.Services.AddScoped<IMessageDao, MessageDao>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
 {
@@ -42,8 +44,6 @@ builder.Services.AddScoped(
             BaseAddress = new Uri("http://localhost:8080") 
         }
 );
-
-
 var app = builder.Build();
 
 app.UseCors(x => x

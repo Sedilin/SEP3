@@ -1,13 +1,21 @@
+using Application.LogicInterfaces;
 using Domain.DTOs;
 using Domain.RabbitMQChat;
 using Microsoft.AspNetCore.Mvc;
 using RabbitMQ.Client;
 
 namespace WebAPI.Controllers;
+
 [ApiController]
 [Route("[controller]")]
 public class MessageController : ControllerBase
 {
+    private readonly IMessageLogic _messageLogic;
+
+    public MessageController(IMessageLogic messageLogic)
+    {
+        _messageLogic = messageLogic;
+    }
 
     [HttpPost("send")]
     public async Task<ActionResult<MessageDto>> SendMessage(MessageDto message)
@@ -24,7 +32,7 @@ public class MessageController : ControllerBase
             return StatusCode(500, e.Message);
         }
     }
-    
+
     [HttpGet("receive")]
     public async Task<ActionResult<MessageDto>> ReceiveMessage(string userName)
     {
@@ -32,8 +40,15 @@ public class MessageController : ControllerBase
         {
             IConnection con = RabbitMQConnection.Instance.GetConnection();
             string userqueue = userName;
-            MessageDto message = RabbitMQConnection.Instance.receive(con, userqueue);
-            return Ok(message);
+            MessageDto dto = RabbitMQConnection.Instance.receive(con, userqueue);
+
+
+            if (dto != null)
+            {
+               await _messageLogic.ArchiveMessage(dto);
+            }
+
+            return Ok(dto);
         }
         catch (Exception e)
         {
@@ -41,5 +56,4 @@ public class MessageController : ControllerBase
             return StatusCode(500, e.Message);
         }
     }
-    
 }
