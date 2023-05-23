@@ -66,3 +66,7 @@
         overflow-y: auto;
     }
 }
+.logo{
+    width: auto;
+    height: 40px;
+}
