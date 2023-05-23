@@ -16,4 +16,9 @@ public class MessageLogic : IMessageLogic
     {
        return _messageDao.ArchiveMessage(dto);
     }
+
+    public Task<IEnumerable<MessageDto>> ShowMessages(int loggedUserId, int otherUserId)
+    {
+        return _messageDao.ShowMessages(loggedUserId, otherUserId);
+    }
 }

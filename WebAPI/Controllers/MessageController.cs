@@ -39,8 +39,7 @@ public class MessageController : ControllerBase
         try
         {
             IConnection con = RabbitMQConnection.Instance.GetConnection();
-            string userqueue = userName;
-            MessageDto dto = RabbitMQConnection.Instance.receive(con, userqueue);
+            MessageDto dto = RabbitMQConnection.Instance.receive(con, userName);
 
 
             if (dto != null)
@@ -49,6 +48,21 @@ public class MessageController : ControllerBase
             }
 
             return Ok(dto);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return StatusCode(500, e.Message);
+        }
+    }
+    
+    [HttpGet("{LoggedUserId:int}/{OtherUserId:int}")]
+    public async Task<ActionResult<IEnumerable<MessageDto>>> ShowMessages([FromRoute] int loggedUserId, int otherUserId)
+    {
+        try
+        {
+           IEnumerable<MessageDto> dtos = await _messageLogic.ShowMessages(loggedUserId, otherUserId);
+            return Ok(dtos);
         }
         catch (Exception e)
         {

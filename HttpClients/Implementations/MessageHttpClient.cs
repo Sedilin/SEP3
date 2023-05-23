@@ -14,7 +14,7 @@ public class MessageHttpClient : IMessageService
     {
         this.client = client;
     }
-    
+
     public async Task<MessageDto> Receive(string userName)
     {
         string uri = $"/Message/receive?userName={userName}";
@@ -45,10 +45,28 @@ public class MessageHttpClient : IMessageService
         {
             throw new Exception(result);
         }
+
         MessageDto messageResult = JsonSerializer.Deserialize<MessageDto>(result, new JsonSerializerOptions
         {
             PropertyNameCaseInsensitive = true
         })!;
         return messageResult;
+    }
+
+    public async Task<IEnumerable<MessageDto>> ShowMessages(int loggedUserId, int otherUserId)
+    {
+        HttpResponseMessage response = await client.GetAsync($"/Message/{loggedUserId}/{otherUserId}");
+        string result = await response.Content.ReadAsStringAsync();
+
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new Exception(result);
+        }
+
+        IEnumerable<MessageDto> dtos = JsonSerializer.Deserialize<IEnumerable<MessageDto>>(result, new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        })!;
+        return dtos;
     }
 }

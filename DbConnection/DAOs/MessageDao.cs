@@ -17,7 +17,7 @@ public class MessageDao : IMessageDao
     public async Task<bool> ArchiveMessage(MessageDto dto)
     {
         HttpResponseMessage response = await client.PostAsJsonAsync("/archive", dto);
-        
+
         string result = await response.Content.ReadAsStringAsync();
 
         if (!response.IsSuccessStatusCode)
@@ -27,5 +27,21 @@ public class MessageDao : IMessageDao
 
         bool responded = JsonSerializer.Deserialize<bool>(result, new JsonSerializerOptions());
         return responded;
+    }
+
+    public async Task<IEnumerable<MessageDto>> ShowMessages(int loggedUserId, int otherUserId)
+    {
+        //maybe use {}
+        HttpResponseMessage response =
+            await client.GetAsync($"/archive?LoggedUserId={loggedUserId}&OtherUserId={otherUserId}");
+        string result = await response.Content.ReadAsStringAsync();
+
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new Exception(result);
+        }
+
+        IEnumerable<MessageDto> dtos = JsonSerializer.Deserialize<IEnumerable<MessageDto>>(result)!;
+        return dtos;
     }
 }
