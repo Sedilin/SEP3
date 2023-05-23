@@ -109,4 +109,19 @@ public class UserController : ControllerBase
             return StatusCode(500, e.Message);
         }
     }
+
+    [HttpDelete("{userId:int}")]
+    public async Task<ActionResult> RemoveAccount([FromRoute] int userId)
+    {
+        try
+        {
+            await userLogic.RemoveAccount(userId);
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return StatusCode(500, e.Message);
+        }
+    }
 }

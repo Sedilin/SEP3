@@ -13,4 +13,5 @@ public interface IUserLogic
     Task<TutorInformationDto> GetTutorAsync(SearchUserParametersDto parameters);
     Task<User?> GetTutorByUsername(SearchUserParametersDto dto);
     Task<User> UpdateUser(TutorInformationDto dto);
+    Task RemoveAccount(int userId);
 }

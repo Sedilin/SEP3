@@ -13,4 +13,5 @@ public interface IUserService
     Task<User> SearchTutorByUsername(string userName);
     Task<User> UpdateProfile(TutorInformationDto dto);
 
+    Task DeleteAccount(int userId);
 }

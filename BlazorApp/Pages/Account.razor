@@ -55,6 +55,7 @@ else
                         </div>
                         <button type="submit" class="btn btn-primary" @onclick="UpdateTutor">Save</button>
                     </form>
+                    <button type="submit" class="btn btn-outline-danger mt-2" @onclick="DeleteAccount">DeleteAccount</button>
                 </div>
             </div>
             <div class="col-6 custom-column">
@@ -134,5 +135,11 @@ else
     {
         navMgr.NavigateTo("/");
        await userService.UpdateProfile(tutor);
+    }
+
+    private async Task DeleteAccount()
+    {
+        await userService.DeleteAccount(tutor.User.Id);
+        navMgr.NavigateTo("/", forceLoad:true);
     }
 }

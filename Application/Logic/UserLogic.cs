@@ -96,6 +96,11 @@ public class UserLogic : IUserLogic
         return user;
     }
 
+    public async Task RemoveAccount(int userId)
+    {
+        await userDao.RemoveAccount(userId);
+    }
+
     private static void ValidateData(UserCreationDto userToCreate)
     {
         string userName = userToCreate.UserName;

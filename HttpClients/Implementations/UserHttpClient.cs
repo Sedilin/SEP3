@@ -128,6 +128,16 @@ public class UserHttpClient: IUserService
         return user;
     }
 
+    public async Task DeleteAccount(int userId)
+    {
+        HttpResponseMessage response = await client.DeleteAsync($"/User/{userId}");
+        string result = await response.Content.ReadAsStringAsync();
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new Exception(result);
+        }
+    }
+
     public async Task<User> GetTutorByUserNameAsync(string userName)
     {
         string uri = "/User/tutorByUsername";

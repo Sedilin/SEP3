@@ -140,4 +140,15 @@ public class UserDao : IUserDao
         })!;
         return user;
     }
+
+    public async Task RemoveAccount(int userId)
+    {
+        string uri = $"/user/removeAccount?userId={userId}";
+        HttpResponseMessage response = await client.DeleteAsync(uri);
+        string result = await response.Content.ReadAsStringAsync();
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new Exception(result);
+        }
+    }
 }

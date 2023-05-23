@@ -13,4 +13,5 @@ public interface IUserDao
     Task<TutorInformationDto> GetTutorAsync(SearchUserParametersDto parameters);
     Task<User?> GetTutorByUsername(SearchUserParametersDto dto);
     Task<User> UpdateProfile(TutorInformationDto dto);
+    Task RemoveAccount(int userId);
 }
