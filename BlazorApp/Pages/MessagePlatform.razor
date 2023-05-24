@@ -7,7 +7,6 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject IUserService userService;
 @inject IMessageService messageService;
-@inject NavigationManager navMgr
 @attribute [Authorize]
 
 
@@ -44,7 +43,13 @@ else
         <div class="col-sm-8">
             <div hidden="@chat">
                 <div class="card" style="width:600px">
-                    <button class="btn btn-outline-danger" style="margin-left: 500px" @onclick="@CloseChat">Close</button>
+
+                    <div id="btn-close-delete">
+
+                        <button class="btn btn-outline-danger" @onclick="@DeleteConversation">Delete Conversation</button>
+                        <button class="btn btn-outline-danger" @onclick="@CloseChat">Close</button>
+                    </div>
+
                     <div class="card-body">
                         <div class="list-group" style="height: 400px; overflow-y: auto;">
                             @if (messages.Count == 0)
@@ -131,7 +136,7 @@ else
 
             tutors = await userService.GetUsers();
             tutors = tutors.Where(u => u.UserType.Equals("tutor", StringComparison.OrdinalIgnoreCase));
-            users = tutors;
+            users = await messageService.GetConversations(sender.Id);
         }
         catch (Exception e)
         {
@@ -141,7 +146,7 @@ else
     }
 
 
-    public async Task ReceiveMessages()
+    private async Task ReceiveMessages()
     {
         MessageDto message = await messageService.Receive(sender.UserName);
         if (message != null)
@@ -175,6 +180,18 @@ else
             users = tutors;
             Console.WriteLine(e);
             msg = e.Message;
+        }
+    }
+
+    private async void DeleteConversation()
+    {
+        int id = receiver.Id;
+        bool confirmation = await messageService.DeleteConversation(sender.Id, receiver.Id);
+        if (confirmation)
+        {
+            users = users?.Where(u => u.Id == id);
+            StateHasChanged();
+            CloseChat();
         }
     }
 

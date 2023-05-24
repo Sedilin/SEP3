@@ -61,7 +61,7 @@ public sealed class RabbitMQConnection
         return true;
     }
 
-    public MessageDto receive(IConnection con, string myqueue)
+    public MessageDto? receive(IConnection con, string myqueue)
     {
         try
         {

@@ -1,4 +1,4 @@
-.message-right{
+.message-right {
     margin-left: 400px;
     padding: 5px 10px;
     border-radius: 20px;
@@ -6,10 +6,18 @@
     background-color: #259af8; /* Green color */
     color: #FFFFFF; /* White font color */
 }
-.message-left{
+
+.message-left {
     padding: 5px 10px;
     border-radius: 20px;
     width: 150px;
     background-color: #9ea1a8; /* Grey color */
     color: #FFFFFF; /* White font color */
+}
+
+#btn-close-delete {
+    display: flex;
+    margin: 5px;
+    align-items: flex-end;
+    justify-content: space-between;
 }
