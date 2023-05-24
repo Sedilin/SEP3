@@ -5,5 +5,5 @@ namespace Application.LogicInterfaces;
 public interface IMessageLogic
 {
     Task<bool> ArchiveMessage(MessageDto dto);
-    Task<IEnumerable<MessageDto>> ShowMessages(int loggedUserId, int otherUserId);
+    Task<List<MessageDto>> ShowMessages(int loggedUserId, int otherUserId);
 }

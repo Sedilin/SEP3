@@ -29,7 +29,7 @@ public class MessageDao : IMessageDao
         return responded;
     }
 
-    public async Task<IEnumerable<MessageDto>> ShowMessages(int loggedUserId, int otherUserId)
+    public async Task<List<MessageDto>> ShowMessages(int loggedUserId, int otherUserId)
     {
         //maybe use {}
         HttpResponseMessage response =
@@ -41,7 +41,7 @@ public class MessageDao : IMessageDao
             throw new Exception(result);
         }
 
-        IEnumerable<MessageDto> dtos = JsonSerializer.Deserialize<IEnumerable<MessageDto>>(result)!;
+        List<MessageDto> dtos = JsonSerializer.Deserialize<List<MessageDto>>(result)!;
         return dtos;
     }
 }

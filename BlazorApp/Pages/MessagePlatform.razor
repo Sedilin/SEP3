@@ -11,7 +11,9 @@
 @attribute [Authorize]
 
 
-<h1> <span class="badge bg-secondary align-content-center">Message Platform</span></h1>
+<h1>
+    <span class="badge bg-secondary align-content-center">Message Platform</span>
+</h1>
 @if (users == null)
 {
     <span>Loading..</span>
@@ -28,7 +30,7 @@ else
                 <input class="form-control me-2 mb-5" type="text" @bind="userName" placeholder="Search for Tutors">
                 <button class="btn btn-primary mb-5" type="button" @onclick="SearchTutorByUsername">Search</button>
             </form>
-            
+
             <div class="list-group">
                 @foreach (User user in users)
                 {
@@ -39,59 +41,62 @@ else
                 }
             </div>
         </div>
-    <div class="col-sm-8">
-        <div hidden="@chat">
-            <div class="card" style="width:600px">
-                <button class="btn btn-outline-danger" style="margin-left: 500px" @onclick="@CloseChat">Close</button>
-                <div class="card-body">
-                    <div class="list-group" style="height: 400px; overflow-y: auto;">
-                        @if (messages.Count == 0)
-                        {
-                            <h3> <span class="badge bg-danger align-content-center">No conversation available</span></h3>
-                        }
-                        else
-                        {
-                            @foreach (MessageDto message in messages)
+        <div class="col-sm-8">
+            <div hidden="@chat">
+                <div class="card" style="width:600px">
+                    <button class="btn btn-outline-danger" style="margin-left: 500px" @onclick="@CloseChat">Close</button>
+                    <div class="card-body">
+                        <div class="list-group" style="height: 400px; overflow-y: auto;">
+                            @if (messages.Count == 0)
                             {
-                                @if (message.Sender.UserName.Equals(sender.UserName))
+                                <h3>
+                                    <span class="badge bg-danger align-content-center">No conversation available</span>
+                                </h3>
+                            }
+                            else
+                            {
+                                @foreach (MessageDto message in messages)
                                 {
-                                    <ul class="message-right"> @message.Sender.UserName : @message.Message</ul>
-                                }
-                                else
-                                {
-                                    <ul class="message-left"> @message.Sender.UserName : @message.Message</ul>
+                                    @if (message.Sender.UserName.Equals(sender.UserName))
+                                    {
+                                        <ul class="message-right"> @message.Sender.UserName : @message.Message</ul>
+                                    }
+                                    else
+                                    {
+                                        <ul class="message-left"> @message.Sender.UserName : @message.Message</ul>
+                                    }
                                 }
                             }
-                        }
 
-                    </div>
-                    <button class="btn btn-outline-primary" disabled="@(string.IsNullOrWhiteSpace(msg))" @onclick="() => SendMessage(receiver)">Send Message</button>
-                    <div>
-                        <label for="comment">Write Message:</label>
-                        <textarea class="form-control" rows="2" id="comment" name="text"@bind="msg">@msg</textarea>
+                        </div>
+                        <button class="btn btn-outline-primary" disabled="@(string.IsNullOrWhiteSpace(msg))" @onclick="() => SendMessage(receiver)">Send Message</button>
+                        <div>
+                            <label for="comment">Write Message:</label>
+                            <textarea class="form-control" rows="2" id="comment" name="text"@bind="msg">@msg</textarea>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    </div>
 @code {
     bool chat = true;
-    
+
     [Parameter]
-    public string userName { get; set;}
-    
+    public string userName { get; set; }
+
     List<MessageDto> messages;
-    
-    void OpenChat(User receiver)
+
+    async void OpenChat(User receiver)
     {
         if (chat)
         {
             chat = false;
         }
         this.receiver = receiver;
-        messages = new();
-        
+        messages = await messageService.ShowMessages(sender.Id, receiver.Id);
+
+
         timer = new Timer(1000); // Refresh every 1 second
         timer.Elapsed += async (sender, e) => await ReceiveMessages();
         timer.AutoReset = true;
@@ -123,7 +128,7 @@ else
             var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
             IEnumerable<User> test = await userService.GetUsers();
             sender = test.First(u => u.UserName.Equals(authState.User.Identity.Name));
-            
+
             tutors = await userService.GetUsers();
             tutors = tutors.Where(u => u.UserType.Equals("tutor", StringComparison.OrdinalIgnoreCase));
             users = tutors;
@@ -134,15 +139,14 @@ else
             msg = e.Message;
         }
     }
-    
-    
+
 
     public async Task ReceiveMessages()
     {
         MessageDto message = await messageService.Receive(sender.UserName);
         if (message != null)
         {
-            if ((message.Sender.UserName.Equals(receiver.UserName)  || message.Receiver.UserName.Equals(receiver.UserName)) && (message.Receiver.UserName.Equals(sender.UserName) || message.Sender.UserName.Equals(sender.UserName)))
+            if ((message.Sender.UserName.Equals(receiver.UserName) || message.Receiver.UserName.Equals(receiver.UserName)) && (message.Receiver.UserName.Equals(sender.UserName) || message.Sender.UserName.Equals(sender.UserName)))
             {
                 messages.Add(message);
             }
@@ -158,6 +162,7 @@ else
         msg = "";
         StateHasChanged();
     }
+
     private async Task SearchTutorByUsername()
     {
         try
@@ -171,7 +176,6 @@ else
             Console.WriteLine(e);
             msg = e.Message;
         }
-        
     }
-}
-}
+
+}}

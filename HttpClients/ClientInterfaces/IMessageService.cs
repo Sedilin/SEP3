@@ -6,5 +6,5 @@ public interface IMessageService
 {
     Task<MessageDto> Receive(string username);
     Task<MessageDto> Send(MessageDto message);
-    Task<IEnumerable<MessageDto>> ShowMessages(int loggedUserId, int otherUserId);
+    Task<List<MessageDto>> ShowMessages(int loggedUserId, int otherUserId);
 }
