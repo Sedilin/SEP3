@@ -124,7 +124,7 @@ else
             messages = new();
             var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
             IEnumerable<User> test = await userService.GetUsers();
-            sender = test.First(u => u.UserName.Equals(authState.User.Identity.Name));
+            sender = test.First(u => u.UserName.Equals(authState.User.Identity?.Name));
 
             tutors = await userService.GetUsers();
             tutors = tutors.Where(u => u.UserType.Equals("tutor", StringComparison.OrdinalIgnoreCase));
@@ -137,12 +137,8 @@ else
             {
                 users = await messageService.GetConversations(sender.Id);
             }
-            
-            timer = new Timer(1000); // Refresh every 1 second
-            timer.Elapsed += async (sender, e) => await ReceiveMessages();
-            timer.AutoReset = true;
-            timer.Start();
-            
+
+            StartTimer();
         }
         catch (Exception e)
         {
@@ -151,18 +147,30 @@ else
     }
 
 
+    private void StartTimer()
+    {
+        timer = new Timer(1000); // Refresh every 1 second
+        timer.Elapsed += async (sender, e) => await ReceiveMessages();
+        timer.AutoReset = true;
+        timer.Start();
+    }
+
     private async Task ReceiveMessages()
     {
         MessageDto message = await messageService.Receive(sender.UserName);
         if (message != null)
         {
-            if ((message.Sender.UserName.Equals(receiver.UserName) || message.Receiver.UserName.Equals(receiver.UserName)) && (message.Receiver.UserName.Equals(sender.UserName) || message.Sender.UserName.Equals(sender.UserName)))
+            if ((message.Sender.UserName.Equals(receiver.UserName) || message.Receiver.UserName.Equals(receiver.UserName))
+                && (message.Receiver.UserName.Equals(sender.UserName) || message.Sender.UserName.Equals(sender.UserName)))
             {
                 messages.Add(message);
-                users = await messageService.GetConversations(sender.Id);
             }
         }
-        StateHasChanged();
+        if (string.IsNullOrWhiteSpace(userName))
+        {
+            users = await messageService.GetConversations(sender.Id);
+        }
+        await InvokeAsync(StateHasChanged);
     }
 
     private async Task SendMessage(User receiver)
@@ -171,7 +179,7 @@ else
         MessageDto sent = await messageService.Send(dto);
         messages.Add(sent);
         msg = "";
-        StateHasChanged();
+        await InvokeAsync(StateHasChanged);
     }
 
     private async Task SearchTutorByUsername()
@@ -187,7 +195,7 @@ else
                 users = await messageService.GetConversations(sender.Id);
             }
             chat = true;
-            StateHasChanged();
+            await InvokeAsync(StateHasChanged);
         }
         catch (Exception e)
         {
@@ -202,7 +210,7 @@ else
         {
             users = await messageService.GetConversations(sender.Id);
             chat = true;
-            StateHasChanged();
+            await InvokeAsync(StateHasChanged);
         }
     }
 

@@ -17,7 +17,7 @@
                 </div>
                 <div class="row-cols-auto content clearfix align-content-center">
                     <label> Password:</label>
-                    <input type="text" @bind="password" @bind:event="oninput"/>
+                    <input type="password" @bind="password" @bind:event="oninput"/>
                 </div>
                 <div class="button-row">
                     <button @onclick="Create" disabled="@(string.IsNullOrEmpty(userName) || (string.IsNullOrEmpty(password)))" class="acceptbtn">Create</button>
