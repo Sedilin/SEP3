@@ -17,10 +17,6 @@
 {
     <span>Loading..</span>
 }
-else if (!users.Any())
-{
-    <span>No conversations to be found</span>
-}
 else
 {
     <div class="row">
@@ -141,7 +137,6 @@ else
         catch (Exception e)
         {
             Console.WriteLine(e);
-            msg = e.Message;
         }
     }
 
@@ -185,13 +180,12 @@ else
 
     private async void DeleteConversation()
     {
-        int id = receiver.Id;
         bool confirmation = await messageService.DeleteConversation(sender.Id, receiver.Id);
         if (confirmation)
         {
-            users = users?.Where(u => u.Id == id);
+            users = await messageService.GetConversations(sender.Id);
+            chat = false;
             StateHasChanged();
-            CloseChat();
         }
     }
 
