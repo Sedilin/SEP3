@@ -114,7 +114,7 @@ else
     private Timer timer;
 
     User sender;
-    User receiver;
+    User receiver = new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -142,6 +142,7 @@ else
             timer.Elapsed += async (sender, e) => await ReceiveMessages();
             timer.AutoReset = true;
             timer.Start();
+            
         }
         catch (Exception e)
         {
@@ -158,6 +159,7 @@ else
             if ((message.Sender.UserName.Equals(receiver.UserName) || message.Receiver.UserName.Equals(receiver.UserName)) && (message.Receiver.UserName.Equals(sender.UserName) || message.Sender.UserName.Equals(sender.UserName)))
             {
                 messages.Add(message);
+                users = await messageService.GetConversations(sender.Id);
             }
         }
         StateHasChanged();
