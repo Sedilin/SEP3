@@ -1,12 +1,13 @@
 @page "/ViewProfile/{username}"
 @using HttpClients.ClientInterfaces
-@using Domain.Model
 @using Domain.DTOs
+@using System.Runtime.CompilerServices
 @inject IUserService userService
 @inject NavigationManager navMgr
+@inject AuthenticationStateProvider authenticationStateProvider
 @attribute [Authorize]
 
-@if (tutor == null)
+@if (_tutor == null)
 {
     <span>Loading..</span>
 }
@@ -15,43 +16,50 @@ else
 {
     <div class="users-container">
         <div class="user-card" style="width:600px">
-            <h4 class="card-title">@username</h4>
+            <h4 class="card-title">@Username</h4>
 
             <div class="card-body">
                 <h4 class="card-body">Courses</h4>
-                @foreach (string course in tutor.Courses)
+                @foreach (string course in _tutor.Courses)
                 {
                     <p>@course</p>
                 }
                 <h4 class="card-body">Rating</h4>
                 <h4 class="card-body">Description</h4>
-                <p class="card-body" style="border: solid; border-width: thick; border-color: #0b5ed7; height: 100px; overflow-y: auto;"> @tutor.Description</p>
+                <p class="card-body" style="border: solid; border-width: thick; border-color: #0b5ed7; height: 100px; overflow-y: auto;"> @_tutor.Description</p>
             </div>
-            <button class="btn btn-outline-primary" @onclick="(() => MessageAsync(username))">Message</button>
+            <button class="btn btn-outline-primary" disabled="@(_loggedUserName.Equals(Username))" @onclick="(() => MessageAsync(Username))">Message</button>
         </div>
     </div>
 }
+
 @code {
 
     [Parameter]
-    public string username { get; set;}
-    private TutorInformationDto? tutor;
-    private User users = new User();
+    public string Username { get; set; }
+
+    private TutorInformationDto? _tutor;
+    private string? _loggedUserName = "";
 
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
-            tutor = await userService.GetTutorAsync(username);
+            var authState = await authenticationStateProvider.GetAuthenticationStateAsync();
+            _loggedUserName = authState.User.Identity?.Name;
+
+            _tutor = await userService.GetTutorAsync(Username);
         }
         catch (Exception e)
         {
             Console.WriteLine(e);
         }
     }
+
     private async Task MessageAsync(string userName)
     {
         navMgr.NavigateTo($"/MessagePlatform/{userName}");
     }
+
 }

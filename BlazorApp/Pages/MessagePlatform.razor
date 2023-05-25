@@ -22,7 +22,7 @@ else
     <div class="row">
         <div class="col-sm-4">
             <form class="d-flex">
-                <input class="form-control me-2 mb-5" type="text" @bind="userName" placeholder="Search for Tutors">
+                <input class="form-control me-2 mb-5" type="text" @bind="userNameSearch" placeholder="Search for Tutors">
                 <button class="btn btn-primary mb-5" type="button" @onclick="SearchTutorByUsername">Search</button>
             </form>
 
@@ -86,6 +86,8 @@ else
     [Parameter]
     public string userName { get; set; }
 
+    private string userNameSearch;
+
     List<MessageDto> messages;
 
     async void OpenChat(User receiver)
@@ -96,12 +98,6 @@ else
         }
         this.receiver = receiver;
         messages = await messageService.ShowMessages(sender.Id, receiver.Id);
-
-
-        timer = new Timer(1000); // Refresh every 1 second
-        timer.Elapsed += async (sender, e) => await ReceiveMessages();
-        timer.AutoReset = true;
-        timer.Start();
     }
 
     void CloseChat()
@@ -132,7 +128,20 @@ else
 
             tutors = await userService.GetUsers();
             tutors = tutors.Where(u => u.UserType.Equals("tutor", StringComparison.OrdinalIgnoreCase));
-            users = await messageService.GetConversations(sender.Id);
+
+            if (!string.IsNullOrWhiteSpace(userName))
+            {
+                users = tutors.Where(u => u.UserName.Equals(userName));
+            }
+            else
+            {
+                users = await messageService.GetConversations(sender.Id);
+            }
+            
+            timer = new Timer(1000); // Refresh every 1 second
+            timer.Elapsed += async (sender, e) => await ReceiveMessages();
+            timer.AutoReset = true;
+            timer.Start();
         }
         catch (Exception e)
         {
@@ -167,14 +176,20 @@ else
     {
         try
         {
-            searchedUsers = new[] { await userService.SearchTutorByUsername(userName) };
-            users = searchedUsers;
+            if (!string.IsNullOrWhiteSpace(userNameSearch))
+            {
+                users = users?.Where(u => u.UserName.Contains(userNameSearch));
+            }
+            else
+            {
+                users = await messageService.GetConversations(sender.Id);
+            }
+            chat = true;
+            StateHasChanged();
         }
         catch (Exception e)
         {
-            users = tutors;
             Console.WriteLine(e);
-            msg = e.Message;
         }
     }
 
@@ -184,7 +199,7 @@ else
         if (confirmation)
         {
             users = await messageService.GetConversations(sender.Id);
-            chat = false;
+            chat = true;
             StateHasChanged();
         }
     }
