@@ -20,7 +20,7 @@
                     <input type="password" @bind="password" @bind:event="oninput"/>
                 </div>
                 <div class="button-row">
-                    <button @onclick="Create" disabled="@(string.IsNullOrEmpty(userName) || (string.IsNullOrEmpty(password)))" class="acceptbtn">Create</button>
+                    <button @onclick="Create" disabled="@(string.IsNullOrWhiteSpace(userName) || (string.IsNullOrWhiteSpace(password)))" class="acceptbtn">Create</button>
                 </div>
             </div>
         </div>
