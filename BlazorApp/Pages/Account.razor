@@ -25,7 +25,7 @@ else
                     <form>
                         <div class="form-group">
                             <label for="textAreaInput">Profile Bio:</label>
-                            <textarea class="form-control" id="textAreaInput" rows="3" @bind="tutor.Description"></textarea>
+                            <textarea class="form-control" id="textAreaInput" rows="3" disabled="@tutor.User.UserType.Equals("User", StringComparison.OrdinalIgnoreCase)" @bind="tutor.Description"></textarea>
                         </div>
                         <div class="row">
                             <div class="col-6 custom-column">
@@ -53,7 +53,7 @@ else
                             <div class="col-6 custom-column">
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-primary" @onclick="UpdateTutor">Save</button>
+                        <button type="submit" class="btn btn-primary" disabled="@tutor.User.UserType.Equals("User", StringComparison.OrdinalIgnoreCase)" @onclick="UpdateTutor">Save</button>
                     </form>
                     <button type="submit" class="btn btn-outline-danger mt-2" @onclick="DeleteAccount">DeleteAccount</button>
                 </div>
@@ -95,7 +95,7 @@ else
 
     private void ToggleCourseTable()
     {
-        if (courseTable)
+        if (courseTable && !tutor.User.UserType.Equals("User", StringComparison.OrdinalIgnoreCase))
         {
             courseTable = false;
         }
