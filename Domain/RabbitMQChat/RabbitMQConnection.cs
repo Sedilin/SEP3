@@ -48,7 +48,9 @@ public sealed class RabbitMQConnection
             IModel channel = con.CreateModel();
             channel.ExchangeDeclare("messageexchange", ExchangeType.Direct);
             channel.QueueDeclare(dto.Receiver.UserName, true, false, false, null);
-            channel.QueueBind(dto.Receiver.UserName, "messageexchange", dto.Receiver.UserName, null);
+            channel.QueueBind(dto.Receiver.UserName, "messageexchange",
+                dto.Receiver.UserName, null);
+            
             var serialized = JsonSerializer.Serialize(dto);
             var msg = Encoding.UTF8.GetBytes(serialized);
             channel.BasicPublish("messageexchange", dto.Receiver.UserName, null, msg);

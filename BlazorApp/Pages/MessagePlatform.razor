@@ -21,13 +21,16 @@ else
 {
     <div class="row">
         <div class="col-sm-4">
-            <form class="d-flex">
-                <input class="form-control me-2 mb-5" type="text" @bind="userNameSearch" placeholder="Search for Tutors">
-                <button class="btn btn-primary mb-5" type="button" @onclick="SearchTutorByUsername">Search</button>
-            </form>
+            @if (string.IsNullOrWhiteSpace(userName))
+            {
+                <form class="d-flex">
+                    <input class="form-control me-2 mb-5" type="text" @bind="userNameSearch" placeholder="Search for Tutors">
+                    <button class="btn btn-primary mb-5" type="button" @onclick="SearchTutorByUsername">Search</button>
+                </form>
+            }
 
             <div class="list-group">
-                @foreach (User user in users)
+                @foreach (User? user in users)
                 {
                     if (!user.UserName.Equals(sender.UserName))
                     {
@@ -103,7 +106,6 @@ else
     void CloseChat()
     {
         chat = true;
-        timer.Stop();
     }
 
     private IEnumerable<User>? users;
@@ -166,10 +168,22 @@ else
                 messages.Add(message);
             }
         }
+        
+        users = await messageService.GetConversations(sender.Id);
+        
         if (string.IsNullOrWhiteSpace(userName))
         {
-            users = await messageService.GetConversations(sender.Id);
+            if (!string.IsNullOrWhiteSpace(userNameSearch))
+            {
+                users = users?.Where(u => u.UserName.Contains(userNameSearch));
+            }
         }
+        else
+        {
+            users = users?.Where(u => u.UserName.Equals(userName));
+        }
+        
+        
         await InvokeAsync(StateHasChanged);
     }
 
