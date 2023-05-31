@@ -5,38 +5,51 @@
 @using Domain.DTOs
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject IUserService userService
+@inject ICourseService courseService
 @inject NavigationManager navMgr
 @attribute [Authorize]
 <h1>Become a Tutor</h1>
 <p>Please fill out the information below to become a tutor:</p>
 
-<div class="users-container">
-    <div class="user-card" style="width:800px">
-        <div class="card-body">
-            <label for="profile-description">Profile Description:</label>
-            <input type="text" class="form-control" id="profile-description" placeholder="Enter a brief description of your tutoring profile" @bind="description">
-            <div class="field">
-                <label for="courses-dropdown">Courses:</label>
-                <select class="form-control" id="courses-dropdown" @bind="course">
-                    <option value="" selected disabled hidden>Choose here</option>
-                    <option value="DMA">DMA</option>
-                    <option value="SDJ1">SDJ1</option>
-                    <option value="SDJ2">SDJ2</option>
-                    <option value="SDJ3">SDJ3</option>
-                    <option value="DNP">DNP</option>
-                </select>
-            </div>
-            <div class="field">
-                <button class="confirmbtn" @onclick="BecomeATutor" disabled="@(string.IsNullOrEmpty(description) || (string.IsNullOrEmpty(course)))">Confirm</button>
+@if (Courses == null)
+{
+    <span>Loading..</span>
+}
+else
+{
+    <div class="users-container">
+        <div class="user-card" style="width:800px">
+            <div class="card-body">
+                <label for="profile-description">Profile Description:</label>
+                <input type="text" class="form-control" id="profile-description" placeholder="Enter a brief description of your tutoring profile" @bind="description">
+                <div class="field">
+                    <label for="courses-dropdown">Courses:</label>
+                    <select class="form-control" id="courses-dropdown" @bind="course">
+                        <option value="" selected disabled hidden>Choose here</option>
+                        @foreach (string course in Courses)
+                                        {
+                                            <option value="@course">@course</option>
+                                        }
+                    </select>
+                </div>
+                <div class="field">
+                    <button class="confirmbtn" @onclick="BecomeATutor" disabled="@(string.IsNullOrEmpty(description) || (string.IsNullOrEmpty(course)))">Confirm</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
+}
 @code {
 
     private User user;
     private string description;
     private string course;
+    public IEnumerable<string>? Courses;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Courses = await courseService.GetCourses(null);
+    }
 
     private async Task BecomeATutor()
     {
@@ -45,7 +58,7 @@
         
         user = users.FirstOrDefault(u => u.UserName.Equals(authState.User.Identity.Name));
         await userService.BecomeTutor(new UserToTutorDto(user, course, description));
-        
+
         navMgr.NavigateTo("/", forceLoad:true);
     }
 
