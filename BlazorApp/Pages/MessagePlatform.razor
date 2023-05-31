@@ -180,7 +180,7 @@ else
         }
         else
         {
-            users = users?.Where(u => u.UserName.Equals(userName));
+            users = new []{await userService.SearchTutorByUsername(userName)};
         }
         
         
